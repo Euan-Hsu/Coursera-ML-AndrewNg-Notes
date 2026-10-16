@@ -1,6 +1,6 @@
 # Learning Progress
 
-最后更新：2026-10-12
+最后更新：2026-10-16（本次补齐单元01归档；其他单元评价不变）
 
 ## 已完成主题
 
@@ -40,6 +40,15 @@
 ### 总体掌握程度
 
 基本掌握
+
+### 单元档案（2026-10-16补归档）
+
+以下内容依据单元01所在聊天的真实自述、作答与纠错整理，非新增测验；归档日期不代表新的结课日期。
+
+- [理解笔记](notes/unit01-supervised-learning-linear-regression.md)
+- [Python练习与验证边界](exercises/unit01-supervised-learning-linear-regression.md)
+- [错题、修订与复查状态](mistakes/unit01-supervised-learning-linear-regression.md)
+- [8道测验、真实作答与评价](quizzes/unit01-supervised-learning-linear-regression.md)
 
 ## 单元02学习结果
 
