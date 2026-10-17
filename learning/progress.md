@@ -1,6 +1,6 @@
 # Learning Progress
 
-最后更新：2026-10-16（本次补齐单元01归档；其他单元评价不变）
+最后更新：2026-10-17（本次补齐单元04四类档案；其他单元记录与评价不变）
 
 ## 已完成主题
 
@@ -129,9 +129,16 @@
 
 本轮不包含多变量参数训练、复杂矩阵求导、特征缩放或正规方程，不将这些内容标记为已完成。保留单元03既有梯度下降学习记录，不把本次范围限制解释为此前完全未学过梯度下降。
 
-评估档案：[单元04题目、作答与纠错复测](quizzes/unit04-multifeature-vectors-linear-regression.md)。
+### 单元档案（2026-10-17补齐）
 
-主要错题：[NumPy数组shape及验证状态](mistakes/unit04-numpy-array-shape.md)。
+依据本单元对话中的真实作答、代码片段与纠错过程整理，不是新增测验。结课日期保持2026-10-12；本次没有新增运行日志或延迟复测，不升级掌握评价，也不改动其他单元记录。
+
+- [理解笔记](notes/unit04-multifeature-vectors-linear-regression.md)：问题、假设、数学模型与表示流程、NumPy实现、材料迁移和失效边界。
+- [练习档案](exercises/unit04-multifeature-vectors-linear-regression.md)：手算、原始代码、标点修订、真实补写语句与归档拼接边界。
+- [五字段错题总档](mistakes/unit04-multifeature-vectors-linear-regression.md)：错误现象、当时理解、正确解释、发现方式与防复发检查。
+- [8题、作答与纠错复测](quizzes/unit04-multifeature-vectors-linear-regression.md)。
+
+历史错题细节保留于[符号与shape](mistakes/unit04-symbol-and-shape.md)、[行列方向](mistakes/unit04-row-column-orientation.md)、[NumPy阶段记录](mistakes/unit04-numpy-array-shape.md)。两份旧数学公式的转义损坏已修复；历史错答及结课评价保留。
 
 ## 掌握程度
 
