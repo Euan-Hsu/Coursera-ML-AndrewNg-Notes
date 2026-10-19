@@ -114,4 +114,4 @@ X_test_scaled = scaler.transform(X_test)
 
 本单元未运行学生提交的Python或StandardScaler片段，没有训练日志、绘图输出、实际模型性能对比、真实材料实验或新材料设计结果。归档所用文件工具和教师算术核对不是学生运行验证。未深入K-fold、Nested CV、GridSearchCV或复杂模型。
 
-下一步先处理炉次分组，再按真实回复补R²和代码修正。题目、原答及评价见[问答档案](../quizzes/unit06-training-validation-test-generalization.md)。
+炉次分组续答已在教师固定D验证、提示留整炉后纠正为训练AB、测试C；对应完整方案训练AB／验证D／测试C。此为提示后设计纠正，不是模型运行或性能验证。本次没有新的手算或Python修正版。下一步先补标准化原因，再按真实回复补R²和代码修正。题目、原答及评价见[问答档案](../quizzes/unit06-training-validation-test-generalization.md)。
