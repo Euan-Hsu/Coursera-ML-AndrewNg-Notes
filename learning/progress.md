@@ -336,7 +336,7 @@ seed42材料测试MAE约5.9276 MPa、RMSE约7.2141 MPa、R²约0.7264；seed7为
 - [错题与复查](mistakes/unit07-linear-regression.md)：过程证据和防复发自检。
 - [8题与分阶段评价](quizzes/unit07-linear-regression.md)：原答、提示、新例复查分开。
 
-本次GitHub只同步上述四档及progress.md，Notebook/数据/环境仍仅本地。后续保持transform返回值传递与MPa单位；复查通过不等于长期熟练。复杂交叉验证、真实材料分组验证、复杂模型与完整批量梯度下降循环未因此学完。
+前一轮先同步四档及progress.md；2026-10-25追加将[学生Notebook](exercises/unit07-linear-regression.ipynb)、两份实际输入及来源、[依赖清单与复现说明](exercises/unit07-reproducibility.md)纳入Git，.venv/缓存/临时截图不上传。Notebook与CSV原样归档，本次不重跑学生模型，新建独立环境的复现尚未验证。后续保持transform返回值传递与MPa单位；复查通过不等于长期熟练。复杂交叉验证、真实材料分组验证、复杂模型与完整批量梯度下降循环未因此学完。
 
 ## 掌握程度
 

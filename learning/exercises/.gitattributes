@@ -1,0 +1,8 @@
+# Preserve the archived inputs and notebook as LF text on every platform.
+unit07-linear-regression.ipynb text eol=lf
+data/unit07-ex1data1.txt text eol=lf
+data/unit07-materials-synthetic.csv text eol=lf
+data/unit07-data-source.md text eol=lf
+data/unit07-materials-synthetic-data-source.md text eol=lf
+requirements-unit07.txt text eol=lf
+unit07-reproducibility.md text eol=lf

@@ -6,7 +6,7 @@
 
 学生按重启内核并运行全部单元的要求报告“没有报错”；教师只读核实已保存Notebook的6个非空代码格计数连续1—6，无error输出，课程与synthetic材料指标/图、新输入预测均与先前一致。教师未代跑或改写Notebook。
 
-最终本地Notebook：`D:/CodexProject/ML_learning/learning/exercises/unit07-linear-regression.ipynb`，77369字节，2026-10-25 14:19:56；SHA256 `B466122C36DBBFFA3C1B5BEFBD0A71BAEB3BE1D0D860063D7C2204DFA365F2DF`。本次GitHub仅同步Markdown；Notebook、数据与环境仍在本地，临时截图路径仅作历史定位，不保证新聊天仍可访问。
+最终本地Notebook：`D:/CodexProject/ML_learning/learning/exercises/unit07-linear-regression.ipynb`，77369字节，2026-10-25 14:19:56；SHA256 `B466122C36DBBFFA3C1B5BEFBD0A71BAEB3BE1D0D860063D7C2204DFA365F2DF`。2026-10-25追加归档：[Notebook](unit07-linear-regression.ipynb)、两份实际输入及来源、[依赖清单](requirements-unit07.txt)和[复现说明](unit07-reproducibility.md)现一并纳入Git；Notebook和数据原样保留。仅.venv、内核运行状态及临时截图仍不上传，旧记录中的“仅本地”对应前次归档阶段。
 
 - seed42材料测试：MAE约5.9276 MPa、RMSE约7.2141 MPa、R²约0.7264，三者属同一划分。
 - seed7测试MAE约5.3588 MPa，不与seed42的R²混成一次评估，不据换seed的较低MAE声称模型改进。
@@ -689,7 +689,7 @@ plt.ylabel("Predicted target")
 
 ## 23. 2026-10-22：教师synthetic数据准备及独立只读核验
 
-实际新材料资产为`data/unit07-materials-synthetic.csv`（仅本地）及来源说明（仅本地：`data/unit07-materials-synthetic-data-source.md`），没有额外Excel或完整材料建模答案。主任务教师使用bundled NumPy 2.3.5、PCG64、seed20261022生成一次，再经Artifact Tool录入/导出；这不是更改学生NumPy 2.2.6环境。完整向量抽样/舍入/任意教学关系见source，不据模型成绩筛选，所有数值100% synthetic、无真实实验观测或物理/工艺结论，无炉次任务。
+实际新材料资产为[data/unit07-materials-synthetic.csv](data/unit07-materials-synthetic.csv)及[来源说明](data/unit07-materials-synthetic-data-source.md)，没有额外Excel或完整材料建模答案。主任务教师使用bundled NumPy 2.3.5、PCG64、seed20261022生成一次，再经Artifact Tool录入/导出；这不是更改学生NumPy 2.2.6环境。完整向量抽样/舍入/任意教学关系见source，不据模型成绩筛选，所有数值100% synthetic、无真实实验观测或物理/工艺结论，无炉次任务。
 
 本轮独立仅读CSV/source并检查文件哈希，没有重生成、训练或计算材料指标。实际核验结果：100行、表头按顺序ZrB2_wt_pct/aging_temperature_C/UTS_MPa，无额外索引/标识列；300个值全部有限、输入在0..2和120..180范围；字段2/1/2位小数全部匹配，100组输入组合互异；1840字节、无UTF-8 BOM、LF换行。说明中的结构、编码、协议和哈希与所检文件一致。
 
