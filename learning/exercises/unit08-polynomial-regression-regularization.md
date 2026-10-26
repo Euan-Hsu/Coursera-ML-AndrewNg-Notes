@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-26：学习中。输入/目标shape与30/10/10划分正确，最新正确源码及输出已核实保存并归档。当前进入多项式特征转换前的shape检查，暂无转换代码、模型训练、预测、评分或正式单元评估。
+2026-10-26：学习中。固定划分及二次Pipeline训练[18]源码/输出均已核实保存，当前等待训练/验证predict代码。尚无预测或MAE/RMSE、其他次数、Ridge与正式单元评估。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -119,3 +119,35 @@ print(X08_val.shape,X08_test.shape,y08_val.shape,y08_test.shape)
 无error输出，前次旧print与缺第二行结果的保存差异现已闭环；保留历史，不倒改为此前一直保存正确。此为学生保存报告加磁盘源码/输出证据，教师没有运行、编辑或补造Notebook输出。编号5/8/10不等同干净内核顺序运行，最终验收仍留单元末。
 
 当前只进入二次多项式展开shape：X08_train为(30,1)，degree=2、include_bias=False时需要学生先判断展开形状。尚未收到答案或多项式代码，不预填通过。后续正式训练中的转换和标准化必须同置Pipeline，不在验证/测试上fit。
+
+## 2026-10-26：二次Pipeline训练真实执行与保存
+
+### 聊天源码与修正层级
+
+学生先正确回答二次展开预期shape为(30,2)。随后聊天提交PolynomialFeatures(degree=2, include_bias=False)、StandardScaler()、LinearRegression()各对象创建代码，静态检查正确；当时不冒充已经执行。
+
+Pipeline首次列表填入PolynomialFeatures、StandardScaler、LinearRegression类名，顺序/结构正确但不是前面创建的对象。教师只解释类/实例/变量并提示后，学生将第二项改为poly08_2、scaler08_2、reg08_2；完整首答和修正版保留在错题第3项，不记首次独立正确。
+
+之后学生原始训练语句：
+
+```python
+pipe08_2.fit(X08_train, y08_train)
+```
+
+静态检查通过后，教师让学生自行运行完整第4步格，没有代跑。
+
+### 本次真实截图
+
+codex-clipboard-4ce8a4a4-497e-4bd3-acdf-7ec90291800b.png显示输入/返回编号[18]，完整三实例、Pipeline正确顺序及仅训练集fit；返回Pipeline结构图，无可见异常。这是拟合成功的执行证据，不是UTS预测、误差或泛化验证。
+
+### 磁盘只读核实
+
+Notebook45810字节，mtime为2026-10-26 16:57:22 +08:00，SHA256为1E04EDE9FD5B9D0FD67E8D00863D70DBC6255E436101E54151EE9BC0EF062BF7。
+
+已执行格编号5、8、10、18；[18]源码与截图一致，包含degree=2、include_bias=False的转换器、标准化器、线性回归实例，pipe08_2.fit只传X08_train/y08_train。输出为Pipeline表示，无error。Notebook尚无已填predict、评分或验证/测试fit，后续3个代码格仍未执行。原件及输出直接归档，不编辑学生Notebook。
+
+核验并未重新执行代码，不证明干净内核顺序运行、当前内存完全同步、拟合质量、是否过拟合或真实材料有效性，也不据此声称Notebook之外从未使用测试数据。
+
+### 当前下一步
+
+学生自行用pipe08_2对原始X08_train、X08_val调用predict，保存为y08_train_pred_2、y08_val_pred_2，并打印二者shape。先提交代码检查再运行；尚无该步骤代码、输出或指标，不预填数值。保持同一训练流程、不手工重复转换、不重新fit、测试封存。

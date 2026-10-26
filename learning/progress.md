@@ -1,6 +1,6 @@
 # Learning Progress
 
-最后更新：2026-10-26（单元08学习中：固定30/10/10划分源码与输出已核实保存，进入多项式特征转换）
+最后更新：2026-10-26（单元08学习中：二次Pipeline训练[18]已执行并核实保存，尚无预测或指标）
 
 ## 已完成主题
 
@@ -16,7 +16,7 @@
 
 ## 正在学习主题
 
-- **当前：单元08，多项式回归、过拟合与正则化。** 13组概念检查及数量题首错/提示层级保留。学生预期shape、选列和30/10/10划分正确，最新源码与两行输出已核实保存；当前进入二次展开shape检查。尚无多项式代码、模型或单元末评估，不标完成。
+- **当前：单元08，多项式回归、过拟合与正则化。** 概念、shape及固定划分正确证据保留；Pipeline类名/对象首答错误经提示修正，二次训练格[18]已执行并保存。下一步学生自行写训练/验证预测及shape；尚无预测指标、其他次数、Ridge或正式评估，不标完成。
 - 单元07本轮验收已完成，不重做本轮8题；按需间隔复查标准化结果传递、指标单位与synthetic边界。单元08按本次明确范围开始。
 - 保持单元01—06已学内容，按需进行间隔复查，不将本轮通过等同于长期熟练。
 - 巩固Python函数、循环与NumPy变量书写；完整多样本梯度下降训练循环尚未独立实现。
@@ -341,16 +341,17 @@ seed42材料测试MAE约5.9276 MPa、RMSE约7.2141 MPa、R²约0.7264；seed7为
 
 ## 单元08学习进展（2026-10-26，学习中）
 
-已进行直线欠拟合、多项式特征、参数线性、次数与复杂度、训练/验证误差、Bias/Variance、正则化目的、L1/L2、强度选模及学习曲线的逐点教学与13组理解检查。不是单元末独立闭卷评估；学生仅已实际执行读取与预览，尚无模型训练。
+已进行直线欠拟合、多项式特征、参数线性、次数与复杂度、训练/验证误差、Bias/Variance、正则化目的、L1/L2、强度选模及学习曲线的逐点教学与13组理解检查。不是单元末独立闭卷评估；学生已执行读取、选列、固定划分及二次Pipeline训练，尚无预测/评分。
 
 - 数量题首答5个模型参数/6个原始输入；提示后6/5；教师区分后原始输入不随次数变化的复查正确。保留两次原答，不写成首次独立正确。
 - L1两惩罚数值4/4和相等判断正确，B标签误写L2由教师修正。
 - 其他核心教学检查有正确作答；部分具体数字对照和完整解释由教师补充，不冒充学生独立总结。
-- 新数据50行单输入synthetic data；读取格[5]、选列格[8]及最新划分格[10]源码/输出均已保存核实。前次旧print/缺第二行输出的磁盘差异保留为历史，现已闭环；没有模型拟合、预测或评分。
-- 当前任务：先判断X08_train二次展开且不含常数列时的shape，再由学生逐步实现Pipeline。此题答案及转换代码尚未收到。
+- 新数据50行单输入synthetic data；读取格[5]、选列格[8]及最新划分格[10]源码/输出均已保存核实。前次旧print/缺第二行输出的磁盘差异保留为历史并已闭环。随后二次Pipeline[18]已训练并保存，尚无预测或评分。
+- 二次展开预期shape(30,2)正确；创建三个工具静态正确，完整Pipeline接收原始验证输入的判断正确。Pipeline首答用类名，经提示改为对象并在[18]正确训练，只用X08_train/y08_train。源代码与返回Pipeline表示已保存，未预测或评分。
+- 当前任务：自行用同一pipe08_2对原始训练/验证输入predict，保存返回值并检查二维shape；暂不接触测试，新代码尚未收到。
 - 固定次数1/2/12，12次Ridge alpha候选预定；固定训练/验证/测试30/10/10，Pipeline仅训练fit，最后一个方案才评价保留测试集。实践仍待逐步教学，不提前声称结果。
 
-档案：[笔记](notes/unit08-polynomial-regression-regularization.md)、[练习与核验证据](exercises/unit08-polynomial-regression-regularization.md)、[错题](mistakes/unit08-polynomial-regression-regularization.md)、[教学检查原答](quizzes/unit08-polynomial-regression-regularization.md)、[空白Notebook](exercises/unit08-polynomial-regression-regularization.ipynb)。正式3概念/2数学/2Python/1材料迁移评估及学生重启顺序运行验收尚未完成。
+档案：[笔记](notes/unit08-polynomial-regression-regularization.md)、[练习与核验证据](exercises/unit08-polynomial-regression-regularization.md)、[错题](mistakes/unit08-polynomial-regression-regularization.md)、[教学检查原答](quizzes/unit08-polynomial-regression-regularization.md)、[本单元Notebook](exercises/unit08-polynomial-regression-regularization.ipynb)。正式3概念/2数学/2Python/1材料迁移评估及学生重启顺序运行验收尚未完成。
 
 ## 掌握程度
 
@@ -392,7 +393,7 @@ seed42材料测试MAE约5.9276 MPa、RMSE约7.2141 MPa、R²约0.7264；seed7为
 
 ## 下一步
 
-1. 单元08shape、两次固定划分及最新保存已核实；现在先检查二次多项式展开shape，再逐步实现训练流程。
+1. 二次Pipeline训练[18]已执行并保存；下一步学生自行写训练/验证predict及shape，检查后再运行，不重新fit或手工重复转换。
 2. 后续逐步检查二维X/y、固定分组和Pipeline中的训练统计量；不提前给完整训练代码或开启测试集。
 3. 单元结束后完成正式评估、学生重启顺序运行/保存验收，按真实证据更新档案。
 
@@ -408,7 +409,7 @@ seed42材料测试MAE约5.9276 MPa、RMSE约7.2141 MPa、R²约0.7264；seed7为
 
 ## 当前单元
 
-单元08学习中：shape和30/10/10划分正确，最新代码及两行输出已核实保存；当前进入多项式展开shape检查，暂无转换代码或模型结果。单元07本轮验收结论与提示层级不变。
+单元08学习中：二次Pipeline类名错误已提示后修正，[18]仅训练集fit并保存；当前等训练/验证predict代码，无预测或误差指标。单元07本轮验收结论与提示层级不变。
 
 ### 单元07早期阶段快照（历史，非当前任务）
 
