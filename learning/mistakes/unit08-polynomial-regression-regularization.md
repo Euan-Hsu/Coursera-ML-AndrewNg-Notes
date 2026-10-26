@@ -67,3 +67,38 @@
 ## 当前边界（2026-10-26）
 
 已完成后续概念教学与学习曲线检查；仅有教学问答，正式单元评估和学生Python实践仍未完成。新资产与教师结构检查不算学生运行或掌握证据。
+
+## 3. Pipeline首次组装：类名与已创建对象混淆（2026-10-26）
+
+### 错误现象与首次原始代码
+
+学生此前已在聊天正确写出PolynomialFeatures(degree=2, include_bias=False)的poly08_2、StandardScaler()的scaler08_2及LinearRegression()的reg08_2；尚无这几行实际执行或保存证据。
+
+学生首次Pipeline提交原文：
+
+```python
+from sklearn.pipeline import Pipeline #引入管道：多项式展开，标准化，回归模型
+pipe08_2 = Pipeline([
+    ("poly", PolynomialFeatures),
+    ("scale", StandardScaler),
+    ("reg", LinearRegression),
+])
+```
+
+### 当时的理解证据
+
+列表结构及展开→标准化→回归的顺序正确；三个工具位置均填类名，未使用已创建对象。不据此推断学生的具体思考过程或将顺序也判错。
+
+### 正确解释与教师提示
+
+类名表示工具的类型；带括号及配置的构造操作创建具体对象，赋值变量保存该对象。Pipeline步骤应引用能执行相应方法的具体对象，才能使用前面设定好的次数和include_bias等配置。
+
+教师以此前poly08_2 = PolynomialFeatures(degree=2, include_bias=False)说明类名、创建操作与对象变量的区别，仅提示保留结构/顺序、将三个位置换为前面创建对象的变量名，不直接给出完整修正版。
+
+### 如何发现
+
+依据本次聊天源码静态检查发现；没有学生运行、报错或保存证据，不编造TypeError、NameError或声称构造语句已经失败。
+
+### 防复发检查与当前状态
+
+逐个核对步骤第二项是否引用了前面创建且配置正确的对象；区分“导入类”“创建对象”“使用对象”。当前等待学生修正三个位置，尚未收到修正版，不标记通过；暂不运行或fit，不开启验证/测试评分。
