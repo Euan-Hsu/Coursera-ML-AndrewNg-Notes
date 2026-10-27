@@ -395,6 +395,18 @@ poly08_12 = PolynomialFeatures(degree = 12, include_bias = False)#创建十二�
 
 本轮教学阶段可以继续，不在此反复追加相同问题；正式单元末仍用新情境检查，不把教师补充冒充学生独立表述。
 
-当前Python小步：学生自行从sklearn.linear_model导入Ridge，创建新回归器ridge08_12_a1，alpha=1；先发代码检查，不fit、不覆盖既有对象。12表示固定十二次候选、a1表示本次alpha=1，它只是预定候选之一，不是已选最优。未收到代码或结果，不预填正确语句、运行成功或Ridge效果。
+当时Python小步为Ridge导入/创建；真实后续提交见下，不倒改当时未收状态。
 
 本轮仅聊天解释与下一小步布置，没有运行/修改Notebook、创建教师模型或新增数值。已有三模型MAE与英文图不变，全部synthetic data；测试不预测/评分，不保证Ridge验证误差必降。后续仍固定十二次、Pipeline内训练拟合转换/标准化，alpha候选按原0.01/0.1/1/10/100/1000，不换seed挑结果。
+
+## Ridge初次组装提交与提示（2026-10-27）
+
+单独Ridge两行首次写法正确，继而教师布置新十二次转换器、新标准化器与使用Ridge的独立Pipeline。学生完整源码保留在mistakes第10项及exercises，不拼成首次正确方案。
+
+Ridge导入和alpha=1对象、degree12/include_bias=False新转换器及新标准化器的写法均正确；额外LinearRegression仅为这段尚未使用的对象，不等于Ridge。Pipeline结构/顺序正确，但第二项仍分别引用旧poly08_1、scaler08_1、reg08_1，实际接入旧一次普通线性候选，而非当前十二次Ridge。外层变量名_12_a1不会自动替换内部对象。
+
+保留已正确的Ridge/新转换器/新标准化器创建语句，只检查并修改Pipeline三步骤第二项：引用本次新十二次转换器、新标准化器和ridge08_12_a1，不用旧_1对象或额外LinearRegression。先发Pipeline这一段代码检查，不fit。
+
+尚无修正版/执行证据，不标本题提示后通过，也不把新工具写对等同整条Ridge Pipeline正确。当前属分步指导，不是正式单元末Python评估。
+
+本次仅聊天源码静态检查，无执行/报错/保存/训练证据，不编造TypeError、实际拟合、原模型已覆盖或数据泄漏，也不预填Ridge预测/MAE。教师未修改/执行Notebook或创建参考模型；既有三个模型和synthetic data英文图保持。固定训练/验证/测试、预定alpha及仅训练fit规则不变，测试继续封存。

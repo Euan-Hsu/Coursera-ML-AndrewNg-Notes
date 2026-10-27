@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。验证覆盖问题提示后基本理解，精确机制由教师补充，首答错误完整保留。当前开始Ridge：只由学生导入并创建alpha=1的新回归器，尚无Ridge代码/执行/结果。原十二次展开、固定划分、测试封存及既有成果不变；正式评估/单元完成仍待。
+2026-10-27：学习中。Ridge及新十二次转换器/标准化器创建写法正确，首次Ridge Pipeline却引用旧一次对象，完整原稿已保留。当前只纠正三步骤的对象引用，尚无修正版、Ridge运行或评分；不重做正确部分、不进入测试，正式评估/单元完成仍待。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -421,6 +421,35 @@ plt.scatter(X08_val,y08_val,label = "验证集")#验证集散点函数
 
 教师澄清：这里指没有验证样本覆盖的位置未被评分；MAE计入所有实际提供的验证样本，不会自动剔除预测很差的验证点。缺覆盖不意味着MAE一定很低/不变或证明完全无过拟合，模拟深谷不能当材料实验事实。
 
-当前仅：学生自行从sklearn.linear_model导入Ridge，创建新回归器ridge08_12_a1，alpha=1；先发代码检查，不fit、不覆盖既有对象。12表示固定十二次候选、a1表示本次alpha=1，它只是预定候选之一，不是已选最优。尚无该代码、导入成功输出、对象创建或训练证据，不预填通过/预测/Ridge误差。
+当时仅布置Ridge导入/对象创建，后续真实源码检查见下；不倒改当时没有执行证据的状态。
 
 本轮仅聊天解释与下一小步布置，没有运行/修改Notebook、创建教师模型或新增数值。已有三模型MAE与英文图不变，全部synthetic data；测试不预测/评分，不保证Ridge验证误差必降。后续仍固定十二次、Pipeline内训练拟合转换/标准化，alpha候选按原0.01/0.1/1/10/100/1000，不换seed挑结果。
+
+## 2026-10-27：Ridge对象创建与Pipeline首稿静态检查
+
+先前学生单独提交from sklearn.linear_model import Ridge及ridge08_12_a1 = Ridge(alpha = 1)，写法正确。教师仅布置独立转换器/标准化器和新Pipeline，不代写完整代码。
+
+本次完整原稿：
+
+```python
+from sklearn.linear_model import Ridge
+ridge08_12_a1 = Ridge(alpha = 1)
+
+poly08_12_a1 = PolynomialFeatures(degree = 12, include_bias = False)#新的多项式转换器
+
+scaler08_12_a1 = StandardScaler()#新的标准化器
+
+reg08_12_a1 = LinearRegression()#新的回归器
+
+pipe08_12_a1 = Pipeline([
+    ("poly", poly08_1),
+    ("scale", scaler08_1),
+    ("reg", reg08_1),
+])#按“多项式展开 → 标准化 → 回归”组装
+```
+
+Ridge导入和alpha=1对象、degree12/include_bias=False新转换器及新标准化器的写法均正确；额外LinearRegression仅为这段尚未使用的对象，不等于Ridge。Pipeline结构/顺序正确，但第二项仍分别引用旧poly08_1、scaler08_1、reg08_1，实际接入旧一次普通线性候选，而非当前十二次Ridge。外层变量名_12_a1不会自动替换内部对象。
+
+当前提示：保留已正确的Ridge/新转换器/新标准化器创建语句，只检查并修改Pipeline三步骤第二项：引用本次新十二次转换器、新标准化器和ridge08_12_a1，不用旧_1对象或额外LinearRegression。先发Pipeline这一段代码检查，不fit。未收到修正版，不提供完整替换程序，也不运行该Pipeline。
+
+本次仅聊天源码静态检查，无执行/报错/保存/训练证据，不编造TypeError、实际拟合、原模型已覆盖或数据泄漏，也不预填Ridge预测/MAE。教师未修改/执行Notebook或创建参考模型；既有三个模型和synthetic data英文图保持。固定训练/验证/测试、预定alpha及仅训练fit规则不变，测试继续封存。
