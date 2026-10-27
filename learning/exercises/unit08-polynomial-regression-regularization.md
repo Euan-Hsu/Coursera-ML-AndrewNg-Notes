@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。学生回复“已保存”后，十二次预测/MAE修正版源码与两项实际输出已核实保存，截图/磁盘差异闭环。当前只解释二次与十二次比较；未做Ridge、RMSE、曲线、正式评估或单元完成，测试继续保留。
+2026-10-27：学习中。学生已完成二次/十二次MAE比较检查、200点训练范围网格及三模型预测/绘图；实际图像与字体警告已保存。当前只将中文标题/图例改为英文以处理DejaVu Sans缺字，不重新训练。曲线解读、Ridge、RMSE、正式评估及单元完成仍待，测试保留。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -320,4 +320,75 @@ print(mae08_val_12)
 
 原Notebook字节归档，不修改学生代码或已有一次/二次结果。旧磁盘差异保留为历史，不将本次正确截图再记新错误。
 
-当前只比较二次/十二次，问题见quizzes，尚未收答；不重新运行、换seed、开启测试或给Ridge整段代码。
+当时仅布置比较问题，后续答复和绘图见下；不倒改当时未收状态。
+
+## 2026-10-27：比较解释、绘图网格与实际三曲线
+
+比较题学生原答：“没有出现明显过拟合，虽然训练MAE下降，但是验证MAE同步下降”。本次教学检查核心正确，学生同时引用了两组误差变化；教师将措辞限定为当前固定划分未显示明显过拟合证据，不保证完全无过拟合或稳定最优。不能回写此前第6项首次依据偏离，也不冒充正式单元末评估。
+
+### 网格构造：保留两版原稿
+
+先答200点单原始特征的shape为(200,1)，判断正确，非当时运行。
+
+第一版原始提交：
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+np.linspace(0, 2, 200) #生成200个等间隔点,np.linspace(起点, 终点, 点数)
+pd.DataFrame({"ZrB2_wt_pct": 一维数值数组}) #保存为单列DataFrame,pd.DataFrame({"列名": 一维数值数组})
+print(ZrB2_wt_pct.shape);一维数值数组不知道填什么
+```
+
+末尾中文是学生提问，不能将整段当作已运行程序或编造语法/名称异常。核心缺口是先保存linspace返回值，再传给DataFrame；起止范围需来自训练列min/max。教师只提示第一步，没有直接补完整网格程序。
+
+下一版原始提交：
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+X08_grid = np.linspace(X08_train["ZrB2_wt_pct"].min(), X08_train["ZrB2_wt_pct"].max(), 200) #生成200个等间隔点,np.linspace(起点, 终点, 点数)
+pd.DataFrame({"ZrB2_wt_pct": X08_grid}) #保存为单列DataFrame,pd.DataFrame({"列名": 一维数值数组})
+print(X08_grid.shape)
+```
+
+训练范围与数组保存已正确，X08_grid大小写相对提示不同但一致使用合法，不判错。教师指出主动附带的DataFrame/print尚未达到二维输入目标：前者结果未保存、后者只查看数组，先让只改后两行。学生随后实际截图[23]已用X08_plot = pd.DataFrame({"ZrB2_wt_pct": X08_grid})，保留两个shape打印，输出(200,)/(200,1)；额外打印数组shape无误。
+
+### 三模型网格预测
+
+学生原始三行正确：
+
+```python
+y08_plot_pred_1 = pipe08_1.predict(X08_plot)
+y08_plot_pred_2 = pipe08_2.predict(X08_plot)
+y08_plot_pred_12 = pipe08_12.predict(X08_plot)
+```
+
+随后自行补shape打印，截图64114d79-1b6d-48f1-b2cb-6985f0f2426e.png实际三组均(200,1)，没有网格fit或手动再次变换。网格只是绘图位置，无新增真实目标，不用它算“实验误差”。
+
+### 散点、曲线与标题
+
+scatter首稿：
+
+```python
+plt.scatter(X08_train,y08_train,label = "训练集和验证集的样本散点图")#散点函数
+```
+
+只传训练组，label不会自动加入验证数据；当前单列DataFrame可用于scatter，不虚构shape错误。教师提示后学生改为：
+
+```python
+plt.scatter(X08_train,y08_train,label = "训练集")#训练集散点函数
+plt.scatter(X08_val,y08_val,label = "验证集")#验证集散点函数
+```
+
+两组输入/目标配对和标签正确，记提示后修正。之后学生自行写三条plt.plot，统一横坐标X08_plot["ZrB2_wt_pct"]、各自y08_plot_pred_1/_2/_12与模型标签，均正确。图前plt.figure、轴含量wt.%和UTS MPa、legend/show均正确。最初标题“训练集和验证集的样本散点”缺synthetic data，教师仅让改标题；本次截图已为含synthetic data的多项式拟合对比标题。
+
+### 本次真实输出与字体警告
+
+最新磁盘Notebook67988字节，mtime2026-10-27 13:10:56 +08:00，SHA256 3A7A6F8D9B155B9FDC99DF4543E4B1B6FB87D885BAF16595281F992D262A1050；代码格计数13/14/15/16/30/null/null，绘图格[30]已存stdout、stderr和display_data，PNG571×455、35052字节。stdout为(200,)、(200,1)、(200,1) (200,1) (200,1)，无error输出；stderr为UserWarning: Glyph ... missing from font(s) DejaVu Sans。
+
+网格仅由训练集ZrB2_wt_pct的min/max生成，单列同名DataFrame交给三个已训练完整Pipeline预测；绘图格没有fit，散点只含训练/验证，三条线共享按含量递增的同一网格。既有三个模型MAE与此前完全一致，无Ridge/RMSE或测试预测评分。全部synthetic data；图标题最终已含synthetic data，轴含量wt.%、UTS MPa。教师仅只读核验，没有执行/编辑Notebook、重拟合参考模型或制造输出，不从计数推断重启/点击顺序或Notebook外状态。
+
+图已生成，中文标题/图例部分显示方框；这是字体缺少中文字形的显示警告，不是回归训练异常。保留含警告的原始Notebook，不自行清理或改输出。学生还没有解释图形，不代填读图结论。
+
+当前仅：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。尚无修改后图像或警告消除证据。

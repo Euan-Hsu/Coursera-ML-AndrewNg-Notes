@@ -311,4 +311,26 @@ poly08_12 = PolynomialFeatures(degree = 12, include_bias = False)#创建十二�
 
 问题：仅凭这组结果，能否认定十二次模型出现了明显过拟合？请同时结合训练MAE和验证MAE解释。
 
-尚未收到作答，不预填是/否、完整理由或通过；该教学检查不是正式单元末评估。先解释已有比较，再逐步绘图/Ridge，不用测试集挑结论。
+学生原答：
+
+> 没有出现明显过拟合，虽然训练MAE下降，但是验证MAE同步下降
+
+评价：本次教学检查核心正确，学生同时引用了两组误差变化；教师将措辞限定为当前固定划分未显示明显过拟合证据，不保证完全无过拟合或稳定最优。不能回写此前第6项首次依据偏离，也不冒充正式单元末评估。该教学检查不是正式单元末评估，不用测试集挑结论。
+
+## 绘图网格、预测与图像：后续真实进展（2026-10-27）
+
+网格shape题：训练含量范围内200个绘图位置，仅一个原始输入，X08_plot的shape？学生原答：
+
+> (200,1)
+
+评价：首次判断正确。绘图位置不是新增训练或实验样本。
+
+代码过程：首次未保存linspace结果且询问DataFrame占位填什么；提示返回值保存后，数组创建正确，仍需保存DataFrame及打印二维表shape。教师分两步提示后，学生截图[23]得到(200,)/(200,1)，原始两版源码存exercises/mistakes第7项。不能由最终正确覆盖首次困难。
+
+学生三条完整Pipeline网格predict首次代码正确，补实际shape输出均(200,1)。散点首次只传训练组却label合称训练/验证，教师提示后拆成两组；三条plot的输入/预测配对正确；标题遗漏synthetic data，经提示补入。完整代码/来源及评价存exercises/mistakes。
+
+最新磁盘Notebook67988字节，mtime2026-10-27 13:10:56 +08:00，SHA256 3A7A6F8D9B155B9FDC99DF4543E4B1B6FB87D885BAF16595281F992D262A1050；代码格计数13/14/15/16/30/null/null，绘图格[30]已存stdout、stderr和display_data，PNG571×455、35052字节。stdout为(200,)、(200,1)、(200,1) (200,1) (200,1)，无error输出；stderr为UserWarning: Glyph ... missing from font(s) DejaVu Sans。
+
+网格仅由训练集ZrB2_wt_pct的min/max生成，单列同名DataFrame交给三个已训练完整Pipeline预测；绘图格没有fit，散点只含训练/验证，三条线共享按含量递增的同一网格。既有三个模型MAE与此前完全一致，无Ridge/RMSE或测试预测评分。全部synthetic data；图标题最终已含synthetic data，轴含量wt.%、UTS MPa。教师仅只读核验，没有执行/编辑Notebook、重拟合参考模型或制造输出，不从计数推断重启/点击顺序或Notebook外状态。
+
+当前仅字体显示任务：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。尚无修改后图像，不预填警告已消除、学生读图解释或Ridge结果；不记正式单元末Python评估通过。

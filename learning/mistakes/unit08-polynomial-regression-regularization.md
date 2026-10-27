@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。学生回复“已保存”后，十二次预测/MAE修正版源码与两项实际输出已核实保存，截图/磁盘差异闭环。当前只解释二次与十二次比较；未做Ridge、RMSE、曲线、正式评估或单元完成，测试继续保留。
+2026-10-27：学习中。学生已完成二次/十二次MAE比较检查、200点训练范围网格及三模型预测/绘图；实际图像与字体警告已保存。当前只将中文标题/图例改为英文以处理DejaVu Sans缺字，不重新训练。曲线解读、Ridge、RMSE、正式评估及单元完成仍待，测试保留。
 
 ## 1. 原始输入、展开特征与模型参数的数量混淆
 
@@ -289,4 +289,54 @@ Notebook13421字节，mtime2026-10-27 10:03:54 +08:00，SHA256 CC9A0FCD31ACE0904
 
 这是学生保存报告加磁盘源码/输出核验，不是教师代跑、修改或补造输出，不据计数推断干净重启、点击顺序或Notebook外状态。实质拟合只训练，预测/评分仅训练与验证；无Ridge实现、RMSE或测试预测评分。全部synthetic data，MAE单位MPa由教师补充，不能作真实材料性能/最佳含量证据。
 
-当前仅解释二次与十二次比较，尚无新答复或新错误，不预填诊断/最优/单元完成。
+当时仅布置二次/十二次比较，后续学生解释与绘图见下；不倒改历史未收状态。
+
+## 7. 函数返回值、临时数组与二维输入表（2026-10-27）
+
+### 原始提交与当时证据
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+np.linspace(0, 2, 200) #生成200个等间隔点,np.linspace(起点, 终点, 点数)
+pd.DataFrame({"ZrB2_wt_pct": 一维数值数组}) #保存为单列DataFrame,pd.DataFrame({"列名": 一维数值数组})
+print(ZrB2_wt_pct.shape);一维数值数组不知道填什么
+```
+
+学生明确表示不知道占位应填什么。没有运行/异常证据，不把末尾提问当已执行语句，也不编造报错。教师解释“一维数值数组”是linspace生成的200个数，需先保存到变量，再传给DataFrame；此时只要求完成数组赋值。
+
+下一版原始提交：
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+X08_grid = np.linspace(X08_train["ZrB2_wt_pct"].min(), X08_train["ZrB2_wt_pct"].max(), 200) #生成200个等间隔点,np.linspace(起点, 终点, 点数)
+pd.DataFrame({"ZrB2_wt_pct": X08_grid}) #保存为单列DataFrame,pd.DataFrame({"列名": 一维数值数组})
+print(X08_grid.shape)
+```
+
+数组创建、训练min/max和一致使用X08_grid均正确；主动附带的DataFrame尚未保存为X08_plot，print查的是数组而非二维表。教师认可已完成的第一步，再仅提示把DataFrame返回值赋给X08_plot、打印它的shape，不把整份代码判全错。这里两个阶段都涉及返回值保存，但不推断学生具体内心或长期能力。
+
+### 修正、验证与防复发
+
+学生随后截图[23]正确保存X08_plot，输出X08_grid为(200,)、X08_plot为(200,1)，三个Pipeline预测均(200,1)。记提示后完成，不回写首次独立正确。区分“调用函数”“保存返回值”“后续使用哪个变量”，逐项追踪数组→带正确列名DataFrame→完整Pipeline输入。网格不fit、不作新增实验样本。
+
+## 8. 图例文字不等于数据；模拟图标题标识（2026-10-27）
+
+首次散点代码：
+
+```python
+plt.scatter(X08_train,y08_train,label = "训练集和验证集的样本散点图")#散点函数
+```
+
+训练输入/目标配对正确，但只指定训练组；label只是图例文字，不会加入验证样本。教师提示后学生自行改两组scatter，训练与验证配对正确。单列DataFrame本例可传入scatter，不虚构维度错误或运行异常。防复发：先看实际传入哪组X/y，再检查标签是否如实描述，标签不决定计算/绘图来源。
+
+首次完整绘图标题语句为plt.title("训练集和验证集的样本散点")，缺少用户要求的synthetic data。教师只让改标题，最终截图已含标识，其余绘图配对/顺序/单位正确。这是图像脱离Notebook时的来源边界提醒，不将漏标题等同于学生已伪造实验结果。
+
+## 字体显示事项（2026-10-27，非新增模型实现错误）
+
+最新磁盘Notebook67988字节，mtime2026-10-27 13:10:56 +08:00，SHA256 3A7A6F8D9B155B9FDC99DF4543E4B1B6FB87D885BAF16595281F992D262A1050；代码格计数13/14/15/16/30/null/null，绘图格[30]已存stdout、stderr和display_data，PNG571×455、35052字节。stdout为(200,)、(200,1)、(200,1) (200,1) (200,1)，无error输出；stderr为UserWarning: Glyph ... missing from font(s) DejaVu Sans。
+
+网格仅由训练集ZrB2_wt_pct的min/max生成，单列同名DataFrame交给三个已训练完整Pipeline预测；绘图格没有fit，散点只含训练/验证，三条线共享按含量递增的同一网格。既有三个模型MAE与此前完全一致，无Ridge/RMSE或测试预测评分。全部synthetic data；图标题最终已含synthetic data，轴含量wt.%、UTS MPa。教师仅只读核验，没有执行/编辑Notebook、重拟合参考模型或制造输出，不从计数推断重启/点击顺序或Notebook外状态。
+
+UserWarning明确为DejaVu Sans缺中文字形，实际图像已经生成；不能误记为训练失败、数值异常或要求换模型。当前只改文字：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。未收到英文新图，不记已修复或读图通过。原始警告和输出保留，不教师清理Notebook历史。
