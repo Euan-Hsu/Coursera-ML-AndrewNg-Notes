@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-26：学习中。二次Pipeline训练/验证predict及二维shape输出已执行保存；当前等待两组MAE代码，无指标、其他次数、Ridge或正式单元评估。
+2026-10-27：学习中。一次与二次模型的训练/验证MAE均有学生实际输出并核实保存；一次训练MAE混用二次预测的首错保留，现已提示后修正。当前只解释两个候选的验证比较，尚无十二次、Ridge、RMSE、正式评估或单元完成。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -187,3 +187,41 @@ y08_val_pred_2 = pipe08_2.predict(X08_val)
 提示后预测代码修正及实际shape检查完成，首次绕过Pipeline/拼写错误保留，不升级为首次独立通过。
 
 当前只布置训练/验证MAE：使用sklearn.metrics.mean_absolute_error，结果变量mae08_train_2、mae08_val_2，打印并标明MPa；代码及数值尚未收到，不预填结果。不用测试、不计算RMSE或比较其他模型。
+
+## 2026-10-27：两候选MAE、一次训练来源修正与保存
+
+二次模型的mean_absolute_error配对正确，学生先用mae08_train命名，随后改为mae08_train_2，并自行补mae08_val_2。实际训练3.87910920966137、验证4.278087126458592。只缺次数后缀不是计算公式错误。
+
+学生随后自行建立degree=1、include_bias=False的新转换器、标准化器、回归器和完整Pipeline，复用固定X08_train/y08_train及X08_val/y08_val。两个模型都仅训练集fit，完整Pipeline.predict接收原始输入，没有重复外部转换。预测shape均为(30,1)/(10,1)。
+
+首次一次训练MAE误用了y08_train_pred_2；不是一次模型得到与二次相同训练成绩。原始代码、当时实际输出及解释保存在mistakes第5项。教师只提示右侧来源，未拟合参考模型或预填正确一次训练分数。
+
+本次截图codex-clipboard-657c3dae-e33e-4ef0-8109-ba1aa7ad635c.png中修正版：
+
+```python
+mae08_train_1 = mean_absolute_error(y08_train,y08_train_pred_1)
+print(mae08_train_1)
+mae08_val_1 = mean_absolute_error(y08_val,y08_val_pred_1)
+print(mae08_val_1)
+```
+
+截图注释未改变计算；上述仅摘录可执行语句。实际保存stream依次为：
+
+```text
+(30, 1)
+(10, 1)
+3.87910920966137
+4.278087126458592
+(30, 1)
+(10, 1)
+9.785853805627955
+8.219585847395972
+```
+
+前四行二次，后四行一次。单位MPa为教师补充；y没有标准化，MAE与UTS同单位。全部synthetic data，非材料实验误差。
+
+Notebook13421字节，mtime2026-10-27 10:03:54 +08:00，SHA256 CC9A0FCD31ACE090438F3B4D23C11DB9A6598F71B13F3AA23C1EAE48F86D4640；实际代码格计数2、3、4、5、6、7、8，模型/MAE同在第4步[5]，最后三个格仅任务注释，无输出。计数不证明干净重启或运行原因。教师仅只读核验，没有执行或编辑学生Notebook。
+
+无已保存error对象；测试仅用于固定划分和shape打印，未做测试predict/评分。没有RMSE、高次/Ridge拟合或曲线。原Notebook字节直接归档，不改学生代码、注释、输出或其他单元。保存状态不冒充干净内核验收、真实材料效果或长期熟练。
+
+当前只让学生解释两候选比较，问题见quizzes；答案尚未收到，不提前代答或标记通过。
