@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。Ridge及新十二次转换器/标准化器创建写法正确，首次Ridge Pipeline却引用旧一次对象，完整原稿已保留。当前只纠正三步骤的对象引用，尚无修正版、Ridge运行或评分；不重做正确部分、不进入测试，正式评估/单元完成仍待。
+2026-10-27：学习中。Ridge Pipeline经两轮修正后引用正确，alpha=1的十二次候选已由学生仅用训练集fit并核实保存。首稿/第二版和教师给出最后tuple的层级保留；当前只做训练/验证预测，尚无Ridge预测/评分、其他alpha、RMSE、正式评估或单元完成。
 
 ## 1. 原始输入、展开特征与模型参数的数量混淆
 
@@ -434,4 +434,36 @@ Ridge导入和alpha=1对象、degree12/include_bias=False新转换器及新标�
 
 本次仅聊天源码静态检查，无执行/报错/保存/训练证据，不编造TypeError、实际拟合、原模型已覆盖或数据泄漏，也不预填Ridge预测/MAE。教师未修改/执行Notebook或创建参考模型；既有三个模型和synthetic data英文图保持。固定训练/验证/测试、预定alpha及仅训练fit规则不变，测试继续封存。
 
-防复发在fit之前列出每一步对应的候选身份：转换器次数/常数列、缩放器所属候选、回归器类型/alpha。当前仅等修正版，未通过，不重做整段流程或改旧一次/二次模型。
+防复发在fit之前列出每一步对应的候选身份：转换器次数/常数列、缩放器所属候选、回归器类型/alpha。当时仅等修正版；后续真实修正见下，不倒改当时未通过状态或旧模型。
+
+### 第10项第二版仍未接Ridge（2026-10-27）
+
+第二次Pipeline原文摘录：
+
+```python
+pipe08_12_a1 = Pipeline([
+    ("poly", poly08_12_a1),
+    ("scale", scaler08_12_a1),
+    ("reg", reg08_12_a1),
+])#按“多项式展开 → 标准化 → 回归”组装
+```
+
+前面仍写reg08_12_a1 = LinearRegression()。前两步已正确，末步仍选了这个普通回归器；没有执行证据，不编造异常/覆盖。教师直接给关键单行("reg", ridge08_12_a1)，并解释"reg"只是步骤名，不要求再创建LinearRegression。
+
+### 第10项第三版修正及真实训练（2026-10-27）
+
+```python
+pipe08_12_a1 = Pipeline([
+    ("poly", poly08_12_a1),
+    ("scale", scaler08_12_a1),
+    ("reg", ridge08_12_a1),
+])#按“多项式展开 → 标准化 → 回归”组装
+```
+
+第二版已把poly/scaler改成本次新对象，前两步正确，但末步仍是由LinearRegression()创建的reg08_12_a1，Ridge未接入。教师先认可前两处，再直接给出最后一项("reg", ridge08_12_a1)，说明步骤名称不决定算法、本候选无需额外普通LinearRegression。第三版学生接入Ridge后静态正确。此为提示并给出关键单行后的修正，不回写成整条Pipeline首次独立正确；首版与第二版均保留。
+
+截图45fb6653-f9c9-4db4-9410-e6fc0e4718a1.png显示正确独立工具和pipe08_12_a1.fit(X08_train,y08_train)返回含Ridge的Pipeline；截图编号左侧裁切，不根据截图猜编号。磁盘Notebook109256字节、mtime2026-10-27 15:18:06 +08:00、SHA256 250ED6027A504DBFBCBA4C50E7BF01FE5B68961A2659E7398421D302E05E0F14；代码计数13/14/15/16/31/32/null，Ridge格实际[32]。保存源码degree12/include_biasFalse、新scaler和Ridge(alpha1)、三个引用均正确，仅fit原固定训练组；execute_result的plain text明确为PolynomialFeatures→StandardScaler→Ridge(alpha=1)，无error。
+
+尚无Ridge predict、shape、MAE/RMSE、其他alpha或Ridge曲线；测试格仍未填，未见验证fit、网格fit或测试预测评分。原三个OLS候选及英文图仍保留。教师仅只读核验、未执行/编辑Notebook或补算指标，不据计数推断重启/点击顺序/Notebook外状态，不由fit成功认定正则化更好。数据全为synthetic data，固定划分与预定alpha候选不变，测试留到最终固定方案后一次评价。
+
+对象引用问题现已在帮助后修正并有实际fit保存，不再反复纠正已正确步骤；最初两版原答不覆盖，不升为首次独立正确。当前仅下一步训练/验证预测，代码和结果尚未收，不预填新错或性能。

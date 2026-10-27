@@ -407,6 +407,18 @@ Ridge导入和alpha=1对象、degree12/include_bias=False新转换器及新标�
 
 保留已正确的Ridge/新转换器/新标准化器创建语句，只检查并修改Pipeline三步骤第二项：引用本次新十二次转换器、新标准化器和ridge08_12_a1，不用旧_1对象或额外LinearRegression。先发Pipeline这一段代码检查，不fit。
 
-尚无修正版/执行证据，不标本题提示后通过，也不把新工具写对等同整条Ridge Pipeline正确。当前属分步指导，不是正式单元末Python评估。
+该首稿提交时无修正/执行证据；后续两版修正及真实训练见下，不倒改当时评价。当前属分步指导，不是正式单元末Python评估。
 
 本次仅聊天源码静态检查，无执行/报错/保存/训练证据，不编造TypeError、实际拟合、原模型已覆盖或数据泄漏，也不预填Ridge预测/MAE。教师未修改/执行Notebook或创建参考模型；既有三个模型和synthetic data英文图保持。固定训练/验证/测试、预定alpha及仅训练fit规则不变，测试继续封存。
+
+## 第10项两轮修正及Ridge实际训练（2026-10-27）
+
+第二版三步骤原答分别是poly08_12_a1、scaler08_12_a1、reg08_12_a1；前两处已修正，最后仍是普通LinearRegression，原始Pipeline摘录在exercises/mistakes。第三版改为poly08_12_a1、scaler08_12_a1、ridge08_12_a1。
+
+第二版已把poly/scaler改成本次新对象，前两步正确，但末步仍是由LinearRegression()创建的reg08_12_a1，Ridge未接入。教师先认可前两处，再直接给出最后一项("reg", ridge08_12_a1)，说明步骤名称不决定算法、本候选无需额外普通LinearRegression。第三版学生接入Ridge后静态正确。此为提示并给出关键单行后的修正，不回写成整条Pipeline首次独立正确；首版与第二版均保留。
+
+随后学生自行补fit仅训练组，截图返回Pipeline，实际存盘已核实。截图45fb6653-f9c9-4db4-9410-e6fc0e4718a1.png显示正确独立工具和pipe08_12_a1.fit(X08_train,y08_train)返回含Ridge的Pipeline；截图编号左侧裁切，不根据截图猜编号。磁盘Notebook109256字节、mtime2026-10-27 15:18:06 +08:00、SHA256 250ED6027A504DBFBCBA4C50E7BF01FE5B68961A2659E7398421D302E05E0F14；代码计数13/14/15/16/31/32/null，Ridge格实际[32]。保存源码degree12/include_biasFalse、新scaler和Ridge(alpha1)、三个引用均正确，仅fit原固定训练组；execute_result的plain text明确为PolynomialFeatures→StandardScaler→Ridge(alpha=1)，无error。
+
+尚无Ridge predict、shape、MAE/RMSE、其他alpha或Ridge曲线；测试格仍未填，未见验证fit、网格fit或测试预测评分。原三个OLS候选及英文图仍保留。教师仅只读核验、未执行/编辑Notebook或补算指标，不据计数推断重启/点击顺序/Notebook外状态，不由fit成功认定正则化更好。数据全为synthetic data，固定划分与预定alpha候选不变，测试留到最终固定方案后一次评价。
+
+当前小步：学生自行用同一个已训练pipe08_12_a1预测原始X08_train和X08_val，分别保存为y08_train_pred_12_a1、y08_val_pred_12_a1并打印二者shape；先发代码检查，不重复fit、不手动外部变换、不预测/评分测试集。未收代码/执行，不标正式单元末Python评估或独立整流程通过。

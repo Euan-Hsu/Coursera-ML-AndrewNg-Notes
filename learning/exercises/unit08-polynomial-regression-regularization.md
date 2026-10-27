@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。Ridge及新十二次转换器/标准化器创建写法正确，首次Ridge Pipeline却引用旧一次对象，完整原稿已保留。当前只纠正三步骤的对象引用，尚无修正版、Ridge运行或评分；不重做正确部分、不进入测试，正式评估/单元完成仍待。
+2026-10-27：学习中。Ridge Pipeline经两轮修正后引用正确，alpha=1的十二次候选已由学生仅用训练集fit并核实保存。首稿/第二版和教师给出最后tuple的层级保留；当前只做训练/验证预测，尚无Ridge预测/评分、其他alpha、RMSE、正式评估或单元完成。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -450,6 +450,42 @@ pipe08_12_a1 = Pipeline([
 
 Ridge导入和alpha=1对象、degree12/include_bias=False新转换器及新标准化器的写法均正确；额外LinearRegression仅为这段尚未使用的对象，不等于Ridge。Pipeline结构/顺序正确，但第二项仍分别引用旧poly08_1、scaler08_1、reg08_1，实际接入旧一次普通线性候选，而非当前十二次Ridge。外层变量名_12_a1不会自动替换内部对象。
 
-当前提示：保留已正确的Ridge/新转换器/新标准化器创建语句，只检查并修改Pipeline三步骤第二项：引用本次新十二次转换器、新标准化器和ridge08_12_a1，不用旧_1对象或额外LinearRegression。先发Pipeline这一段代码检查，不fit。未收到修正版，不提供完整替换程序，也不运行该Pipeline。
+当时仅提示对象引用修正；后续两版及执行证据见下，不倒改当时证据。
 
 本次仅聊天源码静态检查，无执行/报错/保存/训练证据，不编造TypeError、实际拟合、原模型已覆盖或数据泄漏，也不预填Ridge预测/MAE。教师未修改/执行Notebook或创建参考模型；既有三个模型和synthetic data英文图保持。固定训练/验证/测试、预定alpha及仅训练fit规则不变，测试继续封存。
+
+## 2026-10-27：Ridge第二版、关键单行提示与正确训练
+
+第二次Pipeline原文摘录（上方创建仍保留了普通LinearRegression对象）：
+
+```python
+pipe08_12_a1 = Pipeline([
+    ("poly", poly08_12_a1),
+    ("scale", scaler08_12_a1),
+    ("reg", reg08_12_a1),
+])#按“多项式展开 → 标准化 → 回归”组装
+```
+
+第二版已把poly/scaler改成本次新对象，前两步正确，但末步仍是由LinearRegression()创建的reg08_12_a1，Ridge未接入。教师先认可前两处，再直接给出最后一项("reg", ridge08_12_a1)，说明步骤名称不决定算法、本候选无需额外普通LinearRegression。第三版学生接入Ridge后静态正确。此为提示并给出关键单行后的修正，不回写成整条Pipeline首次独立正确；首版与第二版均保留。
+
+第三次学生Pipeline原文：
+
+```python
+pipe08_12_a1 = Pipeline([
+    ("poly", poly08_12_a1),
+    ("scale", scaler08_12_a1),
+    ("reg", ridge08_12_a1),
+])#按“多项式展开 → 标准化 → 回归”组装
+```
+
+检查正确后教师只布置仅训练集fit语句，学生截图已自行补：
+
+```python
+pipe08_12_a1.fit(X08_train, y08_train)
+```
+
+截图45fb6653-f9c9-4db4-9410-e6fc0e4718a1.png显示正确独立工具和pipe08_12_a1.fit(X08_train,y08_train)返回含Ridge的Pipeline；截图编号左侧裁切，不根据截图猜编号。磁盘Notebook109256字节、mtime2026-10-27 15:18:06 +08:00、SHA256 250ED6027A504DBFBCBA4C50E7BF01FE5B68961A2659E7398421D302E05E0F14；代码计数13/14/15/16/31/32/null，Ridge格实际[32]。保存源码degree12/include_biasFalse、新scaler和Ridge(alpha1)、三个引用均正确，仅fit原固定训练组；execute_result的plain text明确为PolynomialFeatures→StandardScaler→Ridge(alpha=1)，无error。
+
+尚无Ridge predict、shape、MAE/RMSE、其他alpha或Ridge曲线；测试格仍未填，未见验证fit、网格fit或测试预测评分。原三个OLS候选及英文图仍保留。教师仅只读核验、未执行/编辑Notebook或补算指标，不据计数推断重启/点击顺序/Notebook外状态，不由fit成功认定正则化更好。数据全为synthetic data，固定划分与预定alpha候选不变，测试留到最终固定方案后一次评价。
+
+原Notebook直接归档，不修改学生代码/输出或旧模型。当前仅下一步：学生自行用同一个已训练pipe08_12_a1预测原始X08_train和X08_val，分别保存为y08_train_pred_12_a1、y08_val_pred_12_a1并打印二者shape；先发代码检查，不重复fit、不手动外部变换、不预测/评分测试集。尚未收到代码/结果。
