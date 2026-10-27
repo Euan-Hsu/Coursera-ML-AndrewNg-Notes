@@ -421,4 +421,16 @@ Ridge导入和alpha=1对象、degree12/include_bias=False新转换器及新标�
 
 尚无Ridge predict、shape、MAE/RMSE、其他alpha或Ridge曲线；测试格仍未填，未见验证fit、网格fit或测试预测评分。原三个OLS候选及英文图仍保留。教师仅只读核验、未执行/编辑Notebook或补算指标，不据计数推断重启/点击顺序/Notebook外状态，不由fit成功认定正则化更好。数据全为synthetic data，固定划分与预定alpha候选不变，测试留到最终固定方案后一次评价。
 
-当前小步：学生自行用同一个已训练pipe08_12_a1预测原始X08_train和X08_val，分别保存为y08_train_pred_12_a1、y08_val_pred_12_a1并打印二者shape；先发代码检查，不重复fit、不手动外部变换、不预测/评分测试集。未收代码/执行，不标正式单元末Python评估或独立整流程通过。
+当时只布置Ridge预测；后续真实结果见下，不升级正式单元末Python评估或独立整流程通过。
+
+## Ridge预测代码实际提交与shape检查（2026-10-27）
+
+学生正确使用完整pipe08_12_a1分别预测原始train/val并保存对应变量，三个可执行语句完整摘录在exercises。本次调用对象、输入和结果变量首次写法正确，有实际输出，不把原生一维输出判错。
+
+截图654b00de-a62e-4231-9c0c-0d213d531a36.png中完整pipe08_12_a1.predict接收原始训练/验证输入，变量后缀均_12_a1，print实际输出(30,) (10,)。磁盘Notebook73794字节、mtime2026-10-27 15:40:07 +08:00、SHA256 F12CB0184E9FBBAE84A37309A882BF0C85C995E00AC3B00C536479F6E55C1BC5；Ridge格实际[35]源码/保存stdout与截图一致，无error。y08源码仍双括号选UTS_MPa的二维单列，已有训练/验证目标shape仍(30,1)/(10,1)，fit仍使用相应训练组。
+
+教师只读当前.venv的scikit-learn1.7.2源码：linear_model/_ridge.py第809–810行在n_targets==1时展平系数，linear_model/_base.py第279–280行据一维系数返回一维预测。故本次(样本数,)是实现允许的单目标表示，不是少预测一列、特征展开丢失或学生把目标改成一维。不能把之前沿用的二维预测约定误说成所有回归器原生输出的硬要求。
+
+教师当前布置：为沿用本单元二维列约定，学生仅对已得到的y08_train_pred_12_a1、y08_val_pred_12_a1调用reshape(-1,1)，将返回值保存并打印shape；先发代码检查，不重新fit/predict、不改原始X或y、不评分测试。-1表示自动确定行数、1表示单列，整理形状不改变预测数值。尚无代码/整理结果，不预填通过或Ridge效果；这是分步教学，非正式单元末Python评估。
+
+此处整理是布局统一而非修复模型。尚无Ridge MAE/RMSE、其他alpha或Ridge曲线，测试仍未预测评分。教师只读文件/依赖源码，未执行模型、修改Notebook或补造输出；不据计数推断重启/操作顺序或Notebook外状态。全部synthetic data，既有三个OLS模型和英文图保留。
