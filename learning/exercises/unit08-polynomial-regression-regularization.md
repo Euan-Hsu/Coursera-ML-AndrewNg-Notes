@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。Ridge对照图已在提示后补齐训练/验证散点并核实保存，原图/各模型MAE不变。当前只观察Ridge对右端曲线摆动的影响；尚无本题答复、其他alpha/RMSE/正式评估或单元完成，测试保留。
+2026-10-27：学习中。Ridge曲线观察与alpha减弱判断正确；新alpha0.1候选的创建至预测/MAE代码静态配对正确，但画线仍用alpha1旧网格预测而图例写0.1。当前只修第二条plot的纵坐标引用，尚无修正版/实际输出，单元未完成，测试保留。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -628,4 +628,64 @@ plt.scatter(X08_val,y08_val,label = "Validation")
 
 stdout仍为(30,1) (10,1)、5.110107645592669、4.781618618396107、(200,1)，原三个OLS MAE未变，原三模型图[31]的PNG571×455/42155字节仍保留。同格仍只用训练组fit，再train/val预测/评分、网格预测及绘图，网格不fit；无其他alpha、RMSE或测试预测评分，测试格未填写。教师仅只读核验/归档，没有运行/修改模型或图，不据计数推断重启/操作顺序。全部synthetic data，不能由视觉平滑直接改写验证误差或推出真实材料机制/最佳含量。
 
-无散点首图仍保存在此前Git提交d173e18aa77b9f6600e1c7a83ae5acc3fdbed92b，教师没有改图补点或清理历史。当前仅让学生观察曲线，题目见quizzes，未收答案，不新跑候选。
+无散点首图仍保存在此前Git提交d173e18aa77b9f6600e1c7a83ae5acc3fdbed92b，教师没有改图补点或清理历史。当时仅布置曲线观察，最新答复与候选首稿见下，不倒改当时未收状态。
+
+## 2026-10-27：alpha0.1候选首次完整源码（尚无运行证据）
+
+学生先答Ridge后“正则化后，曲线平缓下降”正确，随后答alpha1→0.1约束“会减弱”正确。教师只布置新候选的对象/Pipeline，约定a0p1表示alpha0.1；学生主动扩展到fit/predict/MAE/绘图，完整原稿如下，不当作已执行程序：
+
+```python
+#创建alpha = 0.1的新候选
+ridge08_12_a0p1 = Ridge(alpha = 0.1)#新的回归器
+
+poly08_12_a0p1 = PolynomialFeatures(degree = 12, include_bias = False)#新的多项式转换器
+
+scaler08_12_a0p1 = StandardScaler()#新的标准化器
+
+pipe08_12_a0p1 = Pipeline([
+    ("poly", poly08_12_a0p1),
+    ("scale", scaler08_12_a0p1),
+    ("reg", ridge08_12_a0p1),
+])#按“多项式展开 → 标准化 → 回归”组装
+pipe08_12_a0p1.fit(X08_train, y08_train)
+
+#Ridge预测
+y08_train_pred_12_a0p1 = pipe08_12_a0p1.predict(X08_train)
+y08_val_pred_12_a0p1 = pipe08_12_a0p1.predict(X08_val)
+#为保持本单元的二维列约定，下一步只整理已有预测的形状,.reshape(-1, 1),-1 表示自动确定行数，1 表示一列
+y08_train_pred_12_a0p1 = y08_train_pred_12_a0p1.reshape(-1, 1)
+y08_val_pred_12_a0p1 = y08_val_pred_12_a0p1.reshape(-1, 1)
+print(y08_train_pred_12_a0p1.shape, y08_val_pred_12_a0p1.shape)
+
+#计算MAE
+mae08_train_12_a0p1 = mean_absolute_error(y08_train,y08_train_pred_12_a0p1)#计算训练集MAE:结果变量 = 函数名称(真实值, 预测值)
+print(mae08_train_12_a0p1)
+mae08_val_12_a0p1 = mean_absolute_error(y08_val,y08_val_pred_12_a0p1)#计算验证集MAE
+print(mae08_val_12_a0p1)
+
+#观察Ridge曲线如何变化
+y08_plot_pred_12_a0p1 = pipe08_12_a0p1.predict(X08_plot)
+y08_plot_pred_12_a0p1 = y08_plot_pred_12_a0p1.reshape(-1, 1)
+print(y08_plot_pred_12_a0p1.shape)
+
+plt.figure() #创建新图
+plt.scatter(X08_train,y08_train,label = "Training")#训练集散点函数
+plt.scatter(X08_val,y08_val,label = "Validation")#验证集散点函数
+
+plt.plot(X08_plot["ZrB2_wt_pct"], y08_plot_pred_12, label="Degree12 OLS") 
+plt.plot(X08_plot["ZrB2_wt_pct"], y08_plot_pred_12_a1, label="Degree12 Ridge alpha=0.1") 
+
+plt.xlabel("ZrB2 content (wt.%)") #标注横轴
+plt.ylabel("UTS (MPa)") #标注纵轴
+plt.title("Ridge comparison - synthetic data") #添加标题
+plt.legend() #显示图例
+plt.show() #显示图像
+```
+
+alpha0.1的新Ridge/转换器/标准化器及Pipeline对象引用均正确，仍degree12/include_biasFalse、只fit原训练组；train/val预测、reshape返回值保存、MAE配对和新网格预测均一致用_12_a0p1。散点、英语标题/单位/来源标识也正确。学生主动写到评分/绘图，不将扩展任务本身当错误；尚未提供运行输出，以上仅静态正确。
+
+唯一明确问题在第二条plt.plot：纵坐标仍为y08_plot_pred_12_a1，label却是Degree12 Ridge alpha=0.1。label只改文字，不会自动切换曲线数据源；应核对刚生成的alpha0.1网格预测与这条曲线是否一致。第一条OLS基线y08_plot_pred_12是有意保留的未正则对照，正确且不需改。
+
+当前仅提示：仅检查并修正第二条plt.plot的纵坐标，使它引用刚生成的alpha0.1网格预测；OLS基线及前面正确Pipeline/MAE不改。先发修正后这一行代码检查，不运行/重写整段、不训练或用测试。无修正版或结果，不代写完整替换程序/不执行。
+
+本次仅聊天源码静态审查，没有alpha0.1执行/报错/保存/预测数值或MAE证据，不登记新分数、图像或实际误绘，也不补跑教师参考模型。若旧_a1变量可用，这类图例身份错配可能不报错，但本次不推断实际内核状态。原alpha1与OLS成果保留、全部材料数据synthetic data；固定划分/特征流程/预定alpha范围不变，测试仍留最后一次评价。
