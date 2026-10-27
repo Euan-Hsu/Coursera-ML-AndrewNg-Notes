@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。Ridge alpha1训练/验证预测代码正确并已保存，原生shape为(30,)/(10,)，是当前单目标实现的一维输出，不是学生错误。当前仅为本单元二维列约定整理已有预测形状，尚无整理代码或Ridge评分；不重训、不使用测试，单元未完成。
+2026-10-27：学习中。Ridge预测形状经教师提供代码后整理为二维，alpha=1的训练/验证MAE已由学生正确计算并核实保存。当前仅比较与未正则化十二次模型的验证表现；未做其他alpha/Ridge曲线/RMSE/正式评估或单元完成，测试保留。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -512,6 +512,47 @@ print(y08_train_pred_12_a1.shape, y08_val_pred_12_a1.shape)
 
 另外只读metrics/_regression.py第120–124行可见，评分函数会把单目标的一维真实值/预测转为列。因此本次显式reshape不是mean_absolute_error的硬性输入要求，只是本单元统一布局和后续手工数组运算的约定；不能说原生一维预测无法评分。
 
-当前仅下一小步：为沿用本单元二维列约定，学生仅对已得到的y08_train_pred_12_a1、y08_val_pred_12_a1调用reshape(-1,1)，将返回值保存并打印shape；先发代码检查，不重新fit/predict、不改原始X或y、不评分测试。-1表示自动确定行数、1表示单列，整理形状不改变预测数值。代码及整理后的实际shape尚未收到，不代写/运行处理程序，也不把预计(30,1)/(10,1)当作已运行输出。
+当时只布置形状整理，后续学生求助及教师代码帮助后执行见下，不倒改当时证据。
 
 此处整理是布局统一而非修复模型。尚无Ridge MAE/RMSE、其他alpha或Ridge曲线，测试仍未预测评分。教师只读文件/依赖源码，未执行模型、修改Notebook或补造输出；不据计数推断重启/操作顺序或Notebook外状态。全部synthetic data，既有三个OLS模型和英文图保留。
+
+## 2026-10-27：reshape帮助后完成与Ridge MAE真实运行
+
+在原生一维预测已正确的前提下，教师布置统一二维列的reshape练习，学生原答“不会”；这是求助而非已提交错误程序。教师随后给出两行reshape赋值和shape打印的完整写法，学生截图成功运行。该布局整理记为教师直接代码帮助后执行，不回写独立实现，也不说原生Ridge一维输出错误或reshape为MAE硬要求。
+
+教师在学生“不会”后给出的这一步完整代码为：
+
+```python
+y08_train_pred_12_a1 = y08_train_pred_12_a1.reshape(-1, 1)
+y08_val_pred_12_a1 = y08_val_pred_12_a1.reshape(-1, 1)
+
+print(y08_train_pred_12_a1.shape, y08_val_pred_12_a1.shape)
+```
+
+后续学生成功截图中同格也保留了两行predict，输出(30,1)/(10,1)，不误记为完全没有再次predict。随后学生自己提交正确MAE语句，摘录可执行部分：
+
+```python
+mae08_train_12_a1 = mean_absolute_error(y08_train,y08_train_pred_12_a1)
+print(mae08_train_12_a1)
+mae08_val_12_a1 = mean_absolute_error(y08_val,y08_val_pred_12_a1)
+print(mae08_val_12_a1)
+```
+
+截图3004f802-3f73-446d-82e4-084934544f01.png已显示两个预测reshape后(30,1)/(10,1)；本次截图87297e4f-6444-4568-8ccb-229c5f0b28aa.png的MAE目标/预测/打印变量均正确配对_12_a1，实际训练5.110107645592669、验证4.781618618396107。磁盘Notebook74478字节、mtime2026-10-27 16:20:09 +08:00、SHA256 C59B10EE227E627B224680A487C41F126BB885BA6D5E5C95A8A2F7598B01CFDD；代码计数13/14/15/16/31/38/null，Ridge格[38]同源码/stream，无error。
+
+保存stdout：
+
+```text
+(30, 1) (10, 1)
+5.110107645592669
+4.781618618396107
+```
+
+| 十二次候选 | 训练MAE（MPa） | 验证MAE（MPa） |
+| --- | ---: | ---: |
+| LinearRegression，无正则化 | 2.6663586323270865 | 4.190316693931817 |
+| Ridge，alpha=1 | 5.110107645592669 | 4.781618618396107 |
+
+实际Ridge格仍同格创建新工具、仅fit固定训练集，再predict原始train/val、reshape并计算MAE；不能误记成只执行reshape或没有同格fit/predict。相同训练组重新拟合同配置不判泄漏，既有三个OLS指标及英文图不变。尚无其他alpha、Ridge网格预测/曲线、RMSE或测试预测评分。教师只读核验、未执行/改写Notebook或补造模型输出，不据计数推断重启/操作顺序/Notebook外状态。数据均synthetic data，y未缩放，MAE单位MPa由教师补充，原输出为裸数。
+
+原Notebook与输出直接归档，不教师重算、删去“不符合预期”的结果或改seed。当前只让学生比较验证表现，题面见quizzes，答案尚未收到。
