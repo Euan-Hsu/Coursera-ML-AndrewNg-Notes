@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。学生已完成二次/十二次MAE比较检查、200点训练范围网格及三模型预测/绘图；实际图像与字体警告已保存。当前只将中文标题/图例改为英文以处理DejaVu Sans缺字，不重新训练。曲线解读、Ridge、RMSE、正式评估及单元完成仍待，测试保留。
+2026-10-27：学习中。英文标题/图例修复已核实保存，当前绘图输出不再含缺字警告，三模型误差未变。当前只观察十二次与二次曲线右端形状；尚无学生本次读图答复、Ridge、RMSE、正式评估或单元完成，测试保留。
 
 ## 1. 原始输入、展开特征与模型参数的数量混淆
 
@@ -339,4 +339,12 @@ plt.scatter(X08_train,y08_train,label = "训练集和验证集的样本散点图
 
 网格仅由训练集ZrB2_wt_pct的min/max生成，单列同名DataFrame交给三个已训练完整Pipeline预测；绘图格没有fit，散点只含训练/验证，三条线共享按含量递增的同一网格。既有三个模型MAE与此前完全一致，无Ridge/RMSE或测试预测评分。全部synthetic data；图标题最终已含synthetic data，轴含量wt.%、UTS MPa。教师仅只读核验，没有执行/编辑Notebook、重拟合参考模型或制造输出，不从计数推断重启/点击顺序或Notebook外状态。
 
-UserWarning明确为DejaVu Sans缺中文字形，实际图像已经生成；不能误记为训练失败、数值异常或要求换模型。当前只改文字：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。未收到英文新图，不记已修复或读图通过。原始警告和输出保留，不教师清理Notebook历史。
+UserWarning明确为DejaVu Sans缺中文字形，实际图像已经生成；不能误记为训练失败、数值异常或要求换模型。当时仅改文字：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。该任务布置时未收到英文新图；最新修复见下，不预填读图通过，原始警告保留于历史提交，不教师清理Notebook。
+
+### 字体显示修复闭环（2026-10-27）
+
+学生原答：“已修改保存”。教师只读核实Notebook72888字节、mtime2026-10-27 13:18:58 +08:00，SHA256 D8DA35CE6C49CB383C461125C458D2386861D955720F54D792619A45FB537808；代码格计数13/14/15/16/31/null/null。绘图格[31]源码label为Training、Validation、Degree1、Degree2、Degree12，标题Polynomial regression comparison - synthetic data；实际查看已存571×455 PNG（42155字节），英文标题/图例及wt.%/MPa单位显示正常。最新输出只有stdout和display_data，无stderr/glyph警告或error。stdout仍为(200,)、(200,1)、(200,1) (200,1) (200,1)。
+
+三个模型MAE与前一检查点完全一致，网格仍只由训练范围生成、仅用于完整Pipeline.predict，绘图单元格无fit、验证fit或测试使用；无Ridge/RMSE/测试预测评分。教师未执行/编辑模型或绘图，也不据计数推断干净重启/具体操作顺序。先前中文警告原件仍保留在Git提交edf92b58b3b23ec78df7160d2265d1c19aa1ace8，不将当前输出没有警告误写成此前从未出现。全部synthetic data，不作真实材料最佳含量/强化机制或性能证据。
+
+原缺字警告属于环境显示问题，英文标注的本次修复已核实，不再记当前仍缺字或归为算法错误。所有真实首稿/提示/修正层级保留；学生尚未解读曲线，不预填新错误或“过拟合判断通过”。

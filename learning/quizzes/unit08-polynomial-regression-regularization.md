@@ -333,4 +333,20 @@ poly08_12 = PolynomialFeatures(degree = 12, include_bias = False)#创建十二�
 
 网格仅由训练集ZrB2_wt_pct的min/max生成，单列同名DataFrame交给三个已训练完整Pipeline预测；绘图格没有fit，散点只含训练/验证，三条线共享按含量递增的同一网格。既有三个模型MAE与此前完全一致，无Ridge/RMSE或测试预测评分。全部synthetic data；图标题最终已含synthetic data，轴含量wt.%、UTS MPa。教师仅只读核验，没有执行/编辑Notebook、重拟合参考模型或制造输出，不从计数推断重启/点击顺序或Notebook外状态。
 
-当前仅字体显示任务：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。尚无修改后图像，不预填警告已消除、学生读图解释或Ridge结果；不记正式单元末Python评估通过。
+当时字体任务：仅将五个label字符串改为Training、Validation、Degree 1、Degree 2、Degree 12，标题改为Polynomial regression comparison - synthetic data；只修改文字，重新运行当前绘图单元格并发实际图像，不改模型/数据、不重跑训练，不调用测试。当时尚无修改后图像；最新修复见下，不预填学生读图解释或Ridge结果，不记正式单元末Python评估通过。
+
+## 英文标注保存闭环与当前读图问题（2026-10-27）
+
+学生原答：
+
+> 已修改保存
+
+学生原答：“已修改保存”。教师只读核实Notebook72888字节、mtime2026-10-27 13:18:58 +08:00，SHA256 D8DA35CE6C49CB383C461125C458D2386861D955720F54D792619A45FB537808；代码格计数13/14/15/16/31/null/null。绘图格[31]源码label为Training、Validation、Degree1、Degree2、Degree12，标题Polynomial regression comparison - synthetic data；实际查看已存571×455 PNG（42155字节），英文标题/图例及wt.%/MPa单位显示正常。最新输出只有stdout和display_data，无stderr/glyph警告或error。stdout仍为(200,)、(200,1)、(200,1) (200,1) (200,1)。
+
+三个模型MAE与前一检查点完全一致，网格仍只由训练范围生成、仅用于完整Pipeline.predict，绘图单元格无fit、验证fit或测试使用；无Ridge/RMSE/测试预测评分。教师未执行/编辑模型或绘图，也不据计数推断干净重启/具体操作顺序。先前中文警告原件仍保留在Git提交edf92b58b3b23ec78df7160d2265d1c19aa1ace8，不将当前输出没有警告误写成此前从未出现。全部synthetic data，不作真实材料最佳含量/强化机制或性能证据。
+
+本次字体显示任务完成，不把保存确认当作模型解释或正式评估答案。
+
+当前题目：观察右端约1.8–2.0 wt.%区域：绿色十二次曲线和橙色二次曲线的形状有什么不同？先描述曲线现象，不急着给“过拟合”结论。
+
+尚未收到作答，不代写曲线观察、不预填诊断或通过；先描述实际图像，再逐点解释与固定验证MAE的关系，不修改数据挑预期结果。
