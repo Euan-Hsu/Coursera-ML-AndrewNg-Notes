@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-28：学习中。正式M2首次计算A的L1=4/L2=10、B的L1=4/L2=6均正确，alpha增强约束且不保证验证误差下降的解释正确。正式已答5/8、通过5/8（无追加内容提示完成4、提示后完成1），当前第6题P1独立组装管道待首次代码，独立测试仍封存。
+2026-10-28：学习中。正式P1首次代码的新工具/管道、仅训练fit、原始验证预测均正确，但末两行仍reshape/print旧_a0p1，实际(10,1)不能核验新_check预测shape；第17项保留首稿，提示统一引用后待修正。正式已答6/8、通过5/8（无内容提示完成4、提示后完成1），独立测试尚未评价。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -1031,3 +1031,44 @@ print(rmse08_train_selected,rmse08_val_selected)
 尚未收到学生P1源码或执行结果，不将以前工厂/循环练习冒充本题独立实现。P1原生单目标1D或正确整理的2D预测均可，不强制reshape才算正确；所有工具须新建，不复用原模型的已拟合对象。新增代码单元须位于封存测试格之前，后续核验应按内容扫描单元，不固定旧的测试cell索引。
 
 本轮仅纸上计算和概念答复，无新模型、代码执行、指标或Notebook操作。既有实践及所有首答/帮助层级保留；后续P1仍同配置/固定分组，不增加新调参候选，材料数据synthetic data，最终独立测试与单元完成仍待。
+
+## 正式P1首次代码与已保存旧变量shape（2026-10-28）
+
+截图68717965-3214-45ab-bb5d-21e0a1f06fff.png及磁盘同版首稿，完整原文：
+
+```python
+poly08_check = PolynomialFeatures(degree = 12, include_bias = False)#新的多项式转换器
+
+scaler08_check = StandardScaler()#新的标准化器
+
+ridge08_check = Ridge(alpha = 0.1)#新的回归器
+
+pipe08_check = Pipeline([
+    ("poly", poly08_check),
+    ("scale", scaler08_check),
+    ("reg", ridge08_check),
+])#按“多项式展开 → 标准化 → 回归”组装
+pipe08_check.fit(X08_train, y08_train)
+
+#Ridge预测
+y08_val_pred_check= pipe08_check.predict(X08_val)
+#为保持本单元的二维列约定，下一步只整理已有预测的形状,.reshape(-1, 1),-1 表示自动确定行数，1 表示一列
+y08_val_pred_12_a0p1 = y08_val_pred_12_a0p1.reshape(-1, 1)
+print(y08_val_pred_12_a0p1.shape)
+```
+
+实际保存stdout：
+
+```text
+(10, 1)
+```
+
+新degree12/include_bias=False转换器、StandardScaler、Ridge(alpha0.1)及Pipeline均为新对象，步骤引用、仅fit原训练组、完整管道接收原始X08_val预测并保存y08_val_pred_check均正确。错误仅在最后reshape和print仍指向旧y08_val_pred_12_a0p1；输出(10,1)来自被打印的旧变量，不能作为新预测shape的证据，也不能反向声称新预测数值错误。
+
+最新磁盘190605字节，mtime2026-10-28 17:35:45 +08:00，SHA256 F862B710DFA51586C9500B8B676F88EADEE99D00A218DB02ECF7ECDEC86BCCD1，代码计数40/41/42/43/44/45/47/46。P1为JSON索引14的独立代码格[47]，在末格之前，源码和截图68717965-3214-45ab-bb5d-21e0a1f06fff.png同版，实际保存stdout为(10, 1)，无error。不能因有输出或计数推断新变量已核验或干净Run All。
+
+测试边界更新：末JSON索引16格[46]虽然仍以封存测试注释开头，其下现含原selected alpha0.1仅训练fit、train/val预测/shape/RMSE，实际RMSE仍5.07681785879906 / 4.870264282719038。全Notebook未见X08_test预测/评分，不能把位置重排当成测试泄漏，也不能继续写末格纯注释/输出为空。原OLS/六候选结果及旧图保留，数据均synthetic data。
+
+最小提示：对照刚生成的y08_val_pred_check，让最后的形状整理及打印都检查同一新变量；若保留reshape须保存返回值，原生Ridge1D本身也合法，不强制reshape。先发修正末尾代码，不代写完整修正版；尚未收到，不记P1通过。
+
+教师本轮只读核验，没有执行或编辑Notebook/模型，也不把待纠正P1作为完成件上传。本次只更新四档/progress；正式P1待修正/真实输出，P2/T1与最终独立测试仍待，单元未完成。
