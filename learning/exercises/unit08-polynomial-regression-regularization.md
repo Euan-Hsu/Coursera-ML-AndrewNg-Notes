@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-28：学习中。学生按验证MAE正确选择alpha0.1，并正确指出循环末临时模型对应1000；selected管道创建/仅训练fit正确并存有Pipeline表示。预测首稿训练名selseted与后续selected不一致，且磁盘验证reshape仍引用candidate（聊天该行正确）；第15项保留两种源码，提示后待修正及shape打印。没有selected预测shape/评分证据，RMSE/正式评估/测试仍待。
+2026-10-28：学习中。第15项训练拼写和磁盘验证来源均已提示后修正，selected alpha0.1的train/val预测与shape已实际保存为(30,1)/(10,1)，首稿保留。当前进入RMSE补充：仅用现有selected训练/验证预测计算并打印，尚无新指标或测试结果；正式评估、顺序运行验收和单元完成仍待。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -934,3 +934,33 @@ y08_val_pred_selected = y08_val_pred_candidate.reshape(-1, 1)
 最小提示：沿训练和验证两条数据链检查“predict保存名→reshape右侧→reshape保存名”是否逐字一致；统一selected拼写，磁盘验证reshape也接回本次selected预测，再补两项shape打印。先发修正段检查，暂不评分；尚未收到，不预填修正或实际输出。
 
 原六强度循环及旧OLS/Ridge结果、图均保留。末测试格[8]仍仅注释、outputs为空，无测试预测评分。教师没有执行/改写模型或Notebook；本次只更新四档/progress，不把含待纠正源码的Notebook作为预测完成件上传。全部synthetic data，单元未完成。
+
+## selected预测修正与真实shape保存（2026-10-28）
+
+学生提示后修正训练拼写及本地验证来源，最新真实保存代码：
+
+```python
+y08_train_pred_selected = pipe08_selected.predict(X08_train)
+y08_val_pred_selected = pipe08_selected.predict(X08_val)
+y08_train_pred_selected = y08_train_pred_selected.reshape(-1, 1)
+y08_val_pred_selected = y08_val_pred_selected.reshape(-1, 1)
+print(y08_train_pred_selected.shape,y08_val_pred_selected.shape)
+```
+
+学生文字回报：
+
+> (30,1),(10,1)
+
+实际保存stdout末尾：
+
+```text
+(30, 1) (10, 1)
+```
+
+两预测都来自选中的alpha0.1完整管道，形状与对应目标一致，reshape保存返回值正确。一个print输出两个shape合法；第15项记提示后修正并实际保存，原selseted聊天稿及磁盘candidate差异仍保留。
+
+最新Notebook188961字节，mtime2026-10-28 14:02:57 +08:00，SHA256 9F0C21A864934C40C4443B1C5321AA4D3566CEC706FC0DAC23D2D1E1149D94ED，代码计数2/3/4/5/6/23/8。Ridge格[23]末尾明确创建alpha0.1的pipe08_selected，只fit固定训练组，再由完整管道预测原始train/val，两reshape均读写对应selected变量；同一print输出两shape，实际最后stdout为(30, 1) (10, 1)。与学生文字报告一致，无stderr/error。
+
+原六候选MAE、OLS/手动Ridge及三幅旧图均保留；selected尚无新MAE/RMSE或新图。测试格[8]仍仅封存注释、outputs为空，无测试预测评分。教师只读核验，未执行/编辑学生模型/Notebook或代拟合参考指标，不凭计数推断重启/操作顺序或干净Run All。全部synthetic data，单元未完成。
+
+下一小步：教师只介绍RMSE的平方→平均→开方及本地可用的root_mean_squared_error导入/真实值在前的调用约定；学生自行用现有selected预测计算训练/验证RMSE，保存为rmse08_train_selected、rmse08_val_selected并打印，先发代码检查。没有学生提交或实际RMSE，不预填数值/通过，不使用测试集选模。

@@ -1,6 +1,6 @@
 # 单元08教学检查与真实作答
 
-最新状态（2026-10-28）：六候选选择alpha0.1和循环末身份1000均回答正确；selected创建/训练正确，预测首稿与存盘引用待第15项提示修正，尚无预测shape/新评分。以下旧待答为历史。
+最新状态（2026-10-28）：第15项已提示后修正并保存，selected两预测实际shape(30,1)/(10,1)正确；进入RMSE补充，尚无新评分或测试。以下旧待答为历史。
 
 2026-10-27阶段归档。以下为逐点教学检查，不是单元末独立闭卷评估；保留原答/提示/修正层级，不编造总分或完成。一次/二次训练与验证MAE、十二次Pipeline训练已执行并核实保存；十二次预测/MAE修正版源码与输出已核实保存，正式3概念+2数学+2Python+1材料评估尚未开展。
 
@@ -678,3 +678,17 @@ pipe08_12_a0p01.fit(X08_train,y08_train)
 当前磁盘224663字节，mtime2026-10-28 13:50:14 +08:00，SHA256 A7AAFE26E363D8AE8F74FE04CC6788200C77F5FEEAB6D75F179D6B802E36226C，计数2/3/4/5/6/22/8。存有selected正确创建/训练源码及Ridge(alpha0.1) Pipeline表示；也存有上述预测源码差异，但没有selected的shape/MAE/RMSE或相关错误输出，不能由同格execute_result认定后加预测/reshape已按当前源码成功执行，也不能编造NameError或推断内核旧变量是否存在。
 
 原六强度循环及旧OLS/Ridge结果、图均保留。末测试格[8]仍仅注释、outputs为空，无测试预测评分。教师没有执行/改写模型或Notebook；本次只更新四档/progress，不把含待纠正源码的Notebook作为预测完成件上传。全部synthetic data，单元未完成。
+
+## selected形状提示后通过及RMSE待做（2026-10-28）
+
+学生先重新提交四行统一selected的预测/reshape，静态正确；教师请其补shape打印、运行保存。学生真实原答：
+
+> (30,1),(10,1)
+
+与最新磁盘stdout一致。第15项训练拼写及磁盘验证来源已提示后修正，记纠错后运行保存，不覆盖首稿或升级为全程独立首次正确。当前没有selected评分或RMSE题目答案。
+
+最新Notebook188961字节，mtime2026-10-28 14:02:57 +08:00，SHA256 9F0C21A864934C40C4443B1C5321AA4D3566CEC706FC0DAC23D2D1E1149D94ED，代码计数2/3/4/5/6/23/8。Ridge格[23]末尾明确创建alpha0.1的pipe08_selected，只fit固定训练组，再由完整管道预测原始train/val，两reshape均读写对应selected变量；同一print输出两shape，实际最后stdout为(30, 1) (10, 1)。与学生文字报告一致，无stderr/error。
+
+原六候选MAE、OLS/手动Ridge及三幅旧图均保留；selected尚无新MAE/RMSE或新图。测试格[8]仍仅封存注释、outputs为空，无测试预测评分。教师只读核验，未执行/编辑学生模型/Notebook或代拟合参考指标，不凭计数推断重启/操作顺序或干净Run All。全部synthetic data，单元未完成。
+
+下一小步：教师只介绍RMSE的平方→平均→开方及本地可用的root_mean_squared_error导入/真实值在前的调用约定；学生自行用现有selected预测计算训练/验证RMSE，保存为rmse08_train_selected、rmse08_val_selected并打印，先发代码检查。没有学生提交或实际RMSE，不预填数值/通过，不使用测试集选模。
