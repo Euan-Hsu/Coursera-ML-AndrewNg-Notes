@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-28：学习中。alpha0.01 MAE保存闭环已完成，训练3.7427907336170696/验证4.209376817121404 MPa；学生正确解释降低alpha后训练下降而验证上升。for打印任务求助后由教师给完整三行，学生已执行并保存六值输出，记直接代码帮助后执行。下一步学生在循环体中创建新管道并仅训练，不提前评分/测试；剩余强度、RMSE和正式评估仍待。
+2026-10-28：学习中。六个预定Ridge强度的同组训练/验证MAE循环已运行并保存，代码配对及流程正确；新结果10/100/1000已有实际输出。函数及for打印框架曾由教师提供，学生在分步任务中补全建模/预测/评分，不称整段首次独立实现。当前只问六候选验证MAE选择，尚无答复或最终方案；RMSE、正式评估和最终测试仍待。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -857,3 +857,44 @@ for alpha in alpha_candidates08:
 当前for循环体仅print，没有新候选创建、fit或评分；10/100/1000尚无模型结果，六值打印不代表六种强度已评分。同格前面仍保留原三个Ridge候选训练/预测/旧图；原OLS、Ridge1/0.1与新0.01 MAE均保留。测试格[8]仍只有封存注释、outputs为空，没有测试评价；无RMSE或alpha0.01新图。全部synthetic data，正式评估及单元完成仍待。
 
 下一小步仅请学生保留现有列表和循环内print，在循环内部用make_ridge08_pipeline(alpha)创建新的临时管道pipe08_candidate，再只fit固定X08_train/y08_train；先提交代码检查，暂不预测或评分。尚无学生提交，不预填实现或输出。
+
+## 六候选循环完整源码与真实输出（2026-10-28）
+
+学生先正确写出循环内创建/仅训练与train/val预测；再正确迁移reshape和MAE配对。训练指标起初名mae_train_candidate是合法且计算正确的变量，教师仅请求与mae08_val_candidate的命名约定一致，学生最终统一。没有因这一名称差异虚构报错或旧值混用。
+
+最终完整循环原文：
+
+```python
+#用for循环减少重复代码
+alpha_candidates08 = [0.01, 0.1, 1, 10, 100, 1000] #创建列表
+
+for alpha in alpha_candidates08:
+    pipe08_candidate = make_ridge08_pipeline(alpha) #创建新管道
+    pipe08_candidate.fit(X08_train,y08_train) #训练这条管道
+    y08_train_pred_candidate = pipe08_candidate.predict(X08_train)
+    y08_val_pred_candidate = pipe08_candidate.predict(X08_val)
+    y08_train_pred_candidate = y08_train_pred_candidate.reshape(-1, 1)
+    y08_val_pred_candidate = y08_val_pred_candidate.reshape(-1, 1)
+    mae08_train_candidate = mean_absolute_error(y08_train,y08_train_pred_candidate)#计算训练集MAE:结果变量 = 函数名称(真实值, 预测值)
+    mae08_val_candidate = mean_absolute_error(y08_val,y08_val_pred_candidate)#计算验证集MAE
+    print(alpha,mae08_train_candidate, mae08_val_candidate) #用for循环逐个打印这些值
+```
+
+教师静态检查通过后请学生运行并保存。学生回传且磁盘实际保存的六行输出（alpha、训练MAE、验证MAE；后两列MPa）：
+
+```text
+0.01 3.7427907336170696 4.209376817121404
+0.1 4.093727746977597 4.146481680127238
+1 5.110107645592669 4.781618618396107
+10 6.706553867112996 6.599810058231322
+100 8.17530755975614 7.289012030272067
+1000 9.375614450668111 7.92572761478454
+```
+
+最新Notebook188383字节，mtime2026-10-28 13:22:13 +08:00，SHA256 0C9E29C365BEFF9A13EFFE36AEF87F284B02A7361FD292D7332E654C047EB11E，代码计数2/3/4/5/6/20/8。Ridge格[20]实际保存完整循环与以上六行stdout，和学生文字逐项一致，无stderr/error。每轮调用工厂新建degree12/include_bias=False、StandardScaler和相应Ridge，只fit固定训练组；完整Pipeline接收原始train/val输入，reshape返回值保存、两MAE与print均配对正确，预定分组和候选范围未变。
+
+函数及for基础打印框架由教师在求助后提供；完整评分循环是分步任务下由学生补全、检查后执行，不算完全无帮助独立实现。六个强度真实评分现已完成，不再把10/100/1000写为未运行；尚无RMSE/独立测试。
+
+当前问题：“六个候选中，应该优先保留哪个alpha？请依据当前固定验证集的MAE说明理由。”尚未作答，不把打印输出本身当作学生已经正确选模。
+
+原三组OLS、手动Ridge alpha1/0.1/0.01的代码/真实结果及原三幅图保留；循环未新增绘图或RMSE。测试格[8]仍只有封存注释、outputs为空，没有测试预测/评分。教师只读核验、未代跑/改写Notebook或拟合参考模型；不据计数推断重启/具体操作顺序或证明干净Run All。全部材料数据synthetic data，不能据此认定真实最佳ZrB2含量或稳定最优强度，单元尚未完成。
