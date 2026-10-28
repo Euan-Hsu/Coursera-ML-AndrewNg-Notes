@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-28：学习中。六个预定Ridge强度的同组训练/验证MAE循环已运行并保存，代码配对及流程正确；新结果10/100/1000已有实际输出。函数及for打印框架曾由教师提供，学生在分步任务中补全建模/预测/评分，不称整段首次独立实现。当前只问六候选验证MAE选择，尚无答复或最终方案；RMSE、正式评估和最终测试仍待。
+2026-10-28：学习中。学生按验证MAE正确选择alpha0.1，并正确指出循环末临时模型对应1000；selected管道创建/仅训练fit正确并存有Pipeline表示。预测首稿训练名selseted与后续selected不一致，且磁盘验证reshape仍引用candidate（聊天该行正确）；第15项保留两种源码，提示后待修正及shape打印。没有selected预测shape/评分证据，RMSE/正式评估/测试仍待。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -898,3 +898,39 @@ for alpha in alpha_candidates08:
 当前问题：“六个候选中，应该优先保留哪个alpha？请依据当前固定验证集的MAE说明理由。”尚未作答，不把打印输出本身当作学生已经正确选模。
 
 原三组OLS、手动Ridge alpha1/0.1/0.01的代码/真实结果及原三幅图保留；循环未新增绘图或RMSE。测试格[8]仍只有封存注释、outputs为空，没有测试预测/评分。教师只读核验、未代跑/改写Notebook或拟合参考模型；不据计数推断重启/具体操作顺序或证明干净Run All。全部材料数据synthetic data，不能据此认定真实最佳ZrB2含量或稳定最优强度，单元尚未完成。
+
+## alpha0.1明确模型与预测首稿（2026-10-28）
+
+选模真实原答“优先保存alpha = 0.1，当前的验证MAE最低”正确；循环末模型身份原答“1000，整个循环从0.01开始到1000结束”正确。属于当前对照题/状态检查，不升级正式评估完成或覆盖旧首错。
+
+学生创建选中配置的两行原文正确：
+
+```python
+pipe08_selected = make_ridge08_pipeline(0.1)
+pipe08_selected.fit(X08_train,y08_train)
+```
+
+教师检查通过后请其运行，并自行写两预测/二维整理/shape打印。学生聊天首次四行原文：
+
+```python
+y08_train_pred_selseted = pipe08_selected.predict(X08_train)
+y08_val_pred_selected = pipe08_selected.predict(X08_val)
+y08_train_pred_selected = y08_train_pred_selected.reshape(-1, 1)
+y08_val_pred_selected = y08_val_pred_selected.reshape(-1, 1)
+```
+
+训练predict的保存名selseted与后续selected不同，无法把后续reshape连接到刚生成的这一预测；完整Pipeline和原始X输入本身正确。聊天验证两行配对正确。尚未给出两个print或实际shape。
+
+磁盘另外一处差异，最后一行实际为：
+
+```python
+y08_val_pred_selected = y08_val_pred_candidate.reshape(-1, 1)
+```
+
+该右侧仍用循环临时候选预测，按当前循环最后对应alpha1000；不是刚生成的selected验证预测。只指出源码来源问题，不断言已经实际覆盖或生成错误分数。
+
+当前磁盘224663字节，mtime2026-10-28 13:50:14 +08:00，SHA256 A7AAFE26E363D8AE8F74FE04CC6788200C77F5FEEAB6D75F179D6B802E36226C，计数2/3/4/5/6/22/8。存有selected正确创建/训练源码及Ridge(alpha0.1) Pipeline表示；也存有上述预测源码差异，但没有selected的shape/MAE/RMSE或相关错误输出，不能由同格execute_result认定后加预测/reshape已按当前源码成功执行，也不能编造NameError或推断内核旧变量是否存在。
+
+最小提示：沿训练和验证两条数据链检查“predict保存名→reshape右侧→reshape保存名”是否逐字一致；统一selected拼写，磁盘验证reshape也接回本次selected预测，再补两项shape打印。先发修正段检查，暂不评分；尚未收到，不预填修正或实际输出。
+
+原六强度循环及旧OLS/Ridge结果、图均保留。末测试格[8]仍仅注释、outputs为空，无测试预测评分。教师没有执行/改写模型或Notebook；本次只更新四档/progress，不把含待纠正源码的Notebook作为预测完成件上传。全部synthetic data，单元未完成。
