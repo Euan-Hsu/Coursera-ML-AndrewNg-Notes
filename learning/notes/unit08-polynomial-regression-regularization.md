@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。alpha0.1绘图引用已提示后修正，代码/实际MAE与图像均核实保存；当前只比较已试三个十二次候选的验证MAE。其余预定alpha、RMSE、正式评估及单元完成仍待，测试保留。
+2026-10-28：学习中。学生正确判断alpha=0.1在已试十二次候选中验证MAE最低；函数定义经求助由教师提供，学生能判断返回管道尚未训练。首次调用/训练两行出现alpha、对象名和顶层缩进不一致，已提示，待学生修正；没有本次运行证据或新MAE。以下旧待答状态为历史，四个剩余alpha、RMSE、正式评估和最终测试仍待。
 
 ## 学生真实理解与证据层级
 
@@ -270,3 +270,13 @@ alpha1原stdout保持(30,1) (10,1)、训练MAE5.110107645592669、验证MAE4.781
 - [Week 2，第4.5节](https://github.com/Euan-Hsu/Coursera-ML-AndrewNg-Notes/blob/master/markdown/week2.md)：特征与多项式回归。
 - [Week 3，第7.1—7.3节](https://github.com/Euan-Hsu/Coursera-ML-AndrewNg-Notes/blob/master/markdown/week3.md)：过拟合与正则化。
 - [Week 6，第10.3—10.6节](https://github.com/Euan-Hsu/Coursera-ML-AndrewNg-Notes/blob/master/markdown/week6.md)：验证选模、偏差/方差与学习曲线；本单元不展开K-fold。
+
+## 函数配方与调用阶段（2026-10-28）
+
+学生对已试候选比较原答：“目前alpha为0.1时，表现效果最好”。按同一验证MAE判断正确，范围限已试候选；4.146481680127238 MPa是此前学生已保存的synthetic data验证结果，不称稳定优势或最终最优。
+
+为减少重复创建代码，教师布置make_ridge08_pipeline(alpha)：内部新建degree12/include_bias=False转换器、标准化器和使用输入alpha的Ridge，组装并返回尚未训练的Pipeline。学生答“不会”，教师提供完整小函数及def、缩进、return解释；不记函数已由学生独立实现或已执行。
+
+关于返回对象是否训练，学生原答：“尚未训练的管道，这套流程返回值时一条新的pipe”。判断正确；教师补充训练发生在.fit(...)，本函数没有训练调用，不能把教师补充原因记为学生完整自主解释。
+
+随后调用新候选时，训练数据引用X08_train/y08_train正确，但传入alpha与任务不符、两行对象名不同且第二行额外缩进。首次代码保留于exercises和mistakes第14项；当前只提示修正两行，不预填运行/shape/误差或判完成。

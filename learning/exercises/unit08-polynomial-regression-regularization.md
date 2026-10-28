@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-2026-10-27：学习中。alpha0.1绘图引用已提示后修正，代码/实际MAE与图像均核实保存；当前只比较已试三个十二次候选的验证MAE。其余预定alpha、RMSE、正式评估及单元完成仍待，测试保留。
+2026-10-28：学习中。学生正确判断alpha=0.1在已试十二次候选中验证MAE最低；函数定义经求助由教师提供，学生能判断返回管道尚未训练。首次调用/训练两行出现alpha、对象名和顶层缩进不一致，已提示，待学生修正；没有本次运行证据或新MAE。以下旧待答状态为历史，四个剩余alpha、RMSE、正式评估和最终测试仍待。
 
 ## 独立资产（创建时状态；最新学生代码见文末）
 
@@ -722,3 +722,36 @@ plt.plot(X08_plot["ZrB2_wt_pct"], y08_plot_pred_12_a0p1, label="Degree12 Ridge a
 两个Ridge候选同格各自新建工具，只fit固定训练组，再预测train/val与同一训练范围网格；网格不fit。无其他预定alpha、RMSE或测试预测评分，最终测试格仍未填。教师仅只读核验与原字节归档，没有执行/编辑模型或图像，不据计数推断重启/具体操作顺序或证明干净Run All。全部synthetic data；当前候选比较不证明全局最优、稳定优势或真实材料规律，不换seed/数据挑预期结果。
 
 原Notebook字节直接归档，不教师拟合复算。当前只让学生比较同一验证列，题面见quizzes；没有新候选或测试任务。
+
+## 函数求助、首次调用与静态检查（2026-10-28）
+
+已试候选比较原答：“目前alpha为0.1时，表现效果最好”，按固定验证MAE判断正确，仅限已试候选。
+
+教师布置管道工厂函数后，学生原答“不会”。以下是教师直接提供的完整小函数，属于代码帮助，不是学生独立实现或实际运行证据：
+
+```python
+def make_ridge08_pipeline(alpha):
+    poly = PolynomialFeatures(degree=12, include_bias=False)
+    scaler = StandardScaler()
+    ridge = Ridge(alpha=alpha)
+
+    pipe = Pipeline([
+        ("poly", poly),
+        ("scale", scaler),
+        ("reg", ridge),
+    ])
+    return pipe
+```
+
+教师解释def、缩进、return及Ridge(alpha=alpha)的左右含义。学生对是否训练原答：“尚未训练的管道，这套流程返回值时一条新的pipe”。判断正确，教师补足.fit才执行训练的依据。
+
+下一任务：调用函数创建alpha=0.01的pipe08_12_a0p01，并用固定X08_train/y08_train训练；只写两行先检查。学生首次原文（保留第二行4空格缩进及字母o）：
+
+```python
+pipe08_12_a0p01 = make_ridge08_pipeline(0.1)
+    pipe08_12_aop1.fit(X08_train,y08_train)
+```
+
+函数调用/赋值和训练X/y选择方向正确；问题为传入0.1而非0.01、训练对象拼为pipe08_12_aop1而非创建对象、函数外第二行多余缩进。提示仅核对这三处并重发两行，未提供完整修正代码。
+
+目前仅聊天文本静态审查，没有新截图/输出或存盘声明；不声称实际IndentationError、NameError、成功拟合或alpha0.01结果。未读取/运行/编辑或上传本地Notebook；既有alpha1/0.1真实结果和图像仍以上一核实版本为依据。测试继续保留，所有材料数据为synthetic data。
