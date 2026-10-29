@@ -1,10 +1,10 @@
 # 单元08：多项式回归、过拟合与正则化——错题记录
 
-最新状态（2026-10-28）：P1提示后完成，正式已答6/8、通过6/8（无内容提示完成4、提示后完成2）；第7题P2待首次代码/判断，独立测试尚未评价。以下旧待答为历史。
+最新状态（2026-10-29）：学习中。正式已作答7/8、通过6/8（已完成题中无内容提示完成4、提示后完成2）；P2已提交首稿和真实查询输出，输入表正确，但重新建模/fit而未沿用P1已训练管道，预测shape未单独打印，MAE判断待答。P2输入构造已有教师窄范围代码帮助，当前提示修正中；T1与独立最终测试仍待。以下旧待答为历史。
 
 ## 当前状态
 
-2026-10-28：学习中。P1末尾reshape/print已提示后统一为新y08_val_pred_check，实际(10,1)保存闭环，第17项首稿保留。正式已答6/8、通过6/8（无内容提示完成4、提示后完成2），当前第7题P2新synthetic输入预测待首次代码/判断；独立测试尚未评价。
+2026-10-29：学习中。正式已作答7/8、通过6/8（已完成题中无内容提示完成4、提示后完成2）；P2已提交首稿和真实查询输出，输入表正确，但重新建模/fit而未沿用P1已训练管道，预测shape未单独打印，MAE判断待答。P2输入构造已有教师窄范围代码帮助，当前提示修正中；T1与独立最终测试仍待。
 
 ## 1. 原始输入、展开特征与模型参数的数量混淆
 
@@ -897,3 +897,49 @@ print(y08_val_pred_check.shape)
 P1提示后完成；正式已答6/8、通过6/8（无内容提示完成4、提示后完成2），当前P2待首次代码/判断，不预填新错误。
 
 原OLS/手动Ridge/六候选MAE和旧图均保留。末JSON index16[46]仍在封存注释下含selected训练/验证预测及RMSE准备，输出仍5.07681785879906/4.870264282719038，不能称仅注释；未见独立测试预测评分。教师只读核验，未执行/编辑Notebook或参考模型，不凭计数推断重启/运行顺序或干净Run All。全部synthetic data，单元未完成。
+
+## 18. P2新样本预测时重新建模/fit，未沿用已训练管道（2026-10-29）
+
+P2此前学生原答“不会”，属于求助，教师只提供输入表两行代码（构造X08_query_check与打印输入shape），没有提供完整预测/打印/MAE答案。输入构造不能计为学生完全独立实现；这次首稿是在该帮助之后提交。“不会”和编号/位置澄清不另记程序错误。
+
+首次完整源码保留如下，不覆盖后续修正：
+
+```python
+X08_query_check = pd.DataFrame({"ZrB2_wt_pct": [0.6, 1.4]})
+print(X08_query_check.shape)
+
+poly08_query_check = PolynomialFeatures(degree = 12, include_bias = False)#新的多项式转换器
+
+scaler08_query_check = StandardScaler()#新的标准化器
+
+ridge08_query_check = Ridge(alpha = 0.1)#新的回归器
+
+pipe08_query_check = Pipeline([
+    ("poly", poly08_query_check),
+    ("scale", scaler08_query_check),
+    ("reg", ridge08_query_check),
+])#按“多项式展开 → 标准化 → 回归”组装
+pipe08_query_check.fit(X08_train,y08_train)
+
+y08_query_pred_check= pipe08_query_check.predict(X08_query_check)
+y08_query_pred_check = y08_query_pred_check.reshape(-1, 1)
+print(X08_query_check.shape, y08_query_pred_check)
+```
+
+学生实际stdout（截图5754b227-d459-42c0-841e-2fc4b01ed342.png与保存版一致；来自新pipe08_query_check，不冒称来自P1管道）：
+
+```text
+(2, 1)
+(2, 1) [[499.58619272]
+ [498.37685233]]
+```
+
+查询DataFrame列名ZrB2_wt_pct、数值0.6/1.4与输入shape(2,1)正确。学生新建degree12/StandardScaler/Ridge(alpha0.1)及pipe08_query_check，并fit原X08_train/y08_train后预测查询；流程可运行，但偏离本题“沿用已训练pipe08_check、不重新fit”的要求。fit仍只用原训练数据，不是用查询点训练，不据此判查询泄漏或预测数值错误。reshape为(2,1)合法；末print打印的是X08_query_check.shape和预测数值，没有打印y08_query_pred_check.shape，两个(2,1)均来自输入shape，不能冒充预测shape验收。MAE判断尚未作答，不预填其答案或通过。
+
+该项只记录本次“训练完成后直接预测”的任务偏离及shape检查遗漏，不从代码推测学生动机，不扩大为使用查询点训练、数据泄漏、模型数值错误或完全不懂Pipeline。MAE判断未答，不预先记错。
+
+本次最小提示：保留正确输入表；省去本格新建工具、组装新管道和fit，预测时沿用P1已经训练好的管道；补查预测数组自己的shape。先请学生提交修正后的P2代码，再核验其真实运行保存。暂不代写完整修正版或继续T1/独立测试。
+
+正式已作答7/8（P2仅代码部分已答）、通过6/8；已完成题无内容提示完成4、提示后完成2（C1/P1）。P2含教师输入表代码帮助，整题尚未完成；后续不得记为完全首次独立实现。材料数据与查询均为synthetic data，预测值不是实验UTS或最佳成分证据。
+
+只读保存版核验：Notebook 191971字节，mtime 2026-10-29 09:48:15 +08:00，SHA256 8CF05DF4BB131F02F923EBE932D80BDEA37EFE2DEC3B4879050DD7A693FE5183；代码执行计数2/3/4/5/6/7/8/18/10。P1现为[8]，P2为新增独立格[18]，位于Markdown“第7步：锁定方案后的一次最终测试”之前。计数是执行编号，不是题号，不据此推断干净Run All。未见error/stderr或独立测试预测/评分。教师未执行或编辑Notebook/模型，本次不上传待修正Notebook；远程Notebook仍为P1闭环版。
