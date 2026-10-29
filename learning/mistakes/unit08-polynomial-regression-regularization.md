@@ -1,10 +1,10 @@
 # 单元08：多项式回归、过拟合与正则化——错题记录
 
-最新状态（2026-10-29）：正式8题基础评估已通过8/8（无追加内容提示5、提示后3）。最终测试保存版[40]已执行预测及MAE计算，在访问标量MAE.shape处实际报AttributeError，stdout为空，RMSE语句尚未执行；待修正打印/注释并完成固定方案的复现与保存验收，单元尚未完成。以下旧状态为历史。
+最新状态（2026-10-29）：单元08本轮学习与验收已完成。正式8题基础评估通过8/8（无追加内容提示完成5、提示后完成3）；第19项最终测试打印错误已提示后修正。学生确认重启内核、运行全部单元并保存，教师核验10个代码格计数1—10、无error/stderr、三幅图及原成果保留。最终测试MAE=3.301211505786745 MPa，RMSE=4.351805213648792 MPa；全部为synthetic data固定划分结果。以下旧待办和阶段状态均为历史。
 
 ## 当前状态
 
-2026-10-29：正式8题基础评估已通过8/8（无追加内容提示5、提示后3）。最终测试保存版[40]已执行预测及MAE计算，在访问标量MAE.shape处实际报AttributeError，stdout为空，RMSE语句尚未执行；待修正打印/注释并完成固定方案的复现与保存验收，单元尚未完成。
+2026-10-29：单元08本轮学习与验收已完成。正式8题基础评估通过8/8（无追加内容提示完成5、提示后完成3）；第19项最终测试打印错误已提示后修正。学生确认重启内核、运行全部单元并保存，教师核验10个代码格计数1—10、无error/stderr、三幅图及原成果保留。最终测试MAE=3.301211505786745 MPa，RMSE=4.351805213648792 MPa；全部为synthetic data固定划分结果。
 
 ## 1. 原始输入、展开特征与模型参数的数量混淆
 
@@ -1017,3 +1017,44 @@ AttributeError: 'float' object has no attribute 'shape'
 最终方案仍为原degree12/Ridge alpha0.1、原训练拟合与固定30/10/10划分；未见基于测试结果重选，不把打印错误判为训练数据泄漏或要求重划分。后续仅修正程序与复现同一冻结方案，不再称之后执行为首次接触测试，不以其指标重选模型。正式8/8基础评估保持，不新增正式第9题；最终实践验收待完成。
 
 只读快照：Notebook 193460字节，mtime 2026-10-29 10:57:17 +08:00，SHA256 5344A86F0E7E42E4DC190E26723586E4AE6B1058CA627644914EEB3C4C7A7BA1，代码计数29/30/31/32/33/34/35/38/37/40。末selected准备仍只有原训练/验证结果，测试首稿位于新增index18[40]。教师未运行/编辑Notebook或模型，本次仅归档首稿/真实错误到四档和progress，待修正Notebook不上传；远程Notebook仍b16f3942efa650d1894353c82c01b8beeebc6756的P2闭环版。原课程/数据/其他单元/根保护文件不变，全部synthetic data。
+
+### 第19项提示后修正与单元08最终验收（2026-10-29）
+
+修正源码及真实输出：
+
+```python
+#最终测试：测试集
+y08_test_pred_selected = pipe08_selected.predict(X08_test)
+y08_test_pred_selected = y08_test_pred_selected.reshape(-1, 1)
+print(y08_test_pred_selected.shape)
+
+#计算MAE和RMSE
+mae08_test_selected = mean_absolute_error(y08_test,y08_test_pred_selected)#计算测试集集MAE:结果变量 = 函数名称(真实值, 预测值)
+print(mae08_test_selected)
+rmse08_test_selected = root_mean_squared_error(y08_test,y08_test_pred_selected)
+print(rmse08_test_selected)
+```
+
+修正后实际保存stdout（先前[41]与本轮干净运行[10]相同）：
+
+```text
+(10, 1)
+3.301211505786745
+4.351805213648792
+```
+
+数组shape打印与误差标量打印现已区分，测试目标/预测配对正确，注释已指测试组；原[40]实际AttributeError和首稿保留。此项记提示后修正，不能改写成首次无帮助正确。没有要求学生为了不影响计算的重复注释字重新运行；未发现新的概念错误，不新增第20项。
+
+学生原文确认：“已重启内核、全部运行并保存”。教师只读核验学生保存版192349字节，mtime 2026-10-29 16:50:45 +08:00，SHA256 57BC6F4B77F462DA9D93C49B87480DFFF518BC23730E5A267062CC7F8E366498；10个代码格从上到下执行计数连续1—10，error/stderr=0，图像输出3幅。两次random_state=42的30/10/10划分、原OLS1/2/12、六个Ridge候选MAE、P1/P2、selected训练/验证RMSE与最终测试输出保留。结合明确操作反馈和保存证据确认本轮顺序运行验收，不冒称教师观察点击或代跑。
+
+正式评估8/8基础通过：无追加内容提示5，提示后3（C1/P1/P2），原第1–19项全部历史保留。最终实践纠错不另改正式题评分，不等同所有历史问题永久熟练。
+
+保留测试前冻结的PolynomialFeatures(degree=12,include_bias=False) → StandardScaler → Ridge(alpha=0.1)，仅原训练组fit，原始验证/测试/绘图输入交给完整Pipeline。选择依据仍为固定验证MAE在预设候选中最低4.146481680127238 MPa；不因测试结果改变次数、alpha、seed、分组或重选模型，不宣称稳定或全局最优。先前[40]已执行测试预测/MAE并在打印.shape时报错，本次为修复同方案后的评价及重启复现，不能倒写成首次接触测试。
+
+归档时只更新Notebook教师Markdown的完成状态、教学阶段说明及验收摘要；所有10个代码格（包括source、执行计数、完整outputs和metadata）的规范化JSON摘要SHA256在更新前后均为0CAFD06BBC58E264CE8E48A924B1ED4C5077E1F1802F5F052B5020E6BA7AB5B7，确认学生代码/真实输出未改动。最终归档Notebook 193220字节，mtime 2026-10-29 16:54:41 +08:00，SHA256 A890C179B32E41094D4D04D9BFBCB2844F64E85457135E67878F5CD01D213923。教师没有执行Python/Notebook或拟合/预测/评分，没有生成参考模型输出。
+
+原课程目录及根README/AGENTS/STUDY_ROADMAP/learning README未改。Unit07实际文件unit07-linear-regression.ipynb的SHA256仍B466122C36DBBFFA3C1B5BEFBD0A71BAEB3BE1D0D860063D7C2204DFA365F2DF；本单元CSV仍FC097879ABFAE15B6DEF06B5B89254BA3144AAA9380A4C4AE270FE54DADE54AB。未覆盖单元07成果或修改教学数据。
+
+本次数据全部为synthetic data，单一原始输入ZrB2含量、数据域0–2 wt.%、目标UTS；结果只说明该教学数据固定划分上的误差，不是实验UTS、真实最佳颗粒含量、疲劳预测或材料强化因果机制。域外能计算数值但可靠性未经验证。8/8本轮基础通过与流程复现不等同长期熟练；后续保持数组/标量、变量身份、fit/predict和有限验证覆盖的自检。下一单元未自动启动，也不新增调参或新模型。
+
+后续只需按需保持：检查完整Pipeline的实际对象、原始输入和预测变量是否对应，区分fit与predict，区分数组与标量，确认MAE/RMSE单位；不反复重做本轮已通过的正式题。
