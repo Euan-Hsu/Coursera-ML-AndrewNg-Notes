@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；尚无模型评价分数。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；尚无模型评价分数。
 
 ## 工作簿与运行环境
 
@@ -263,8 +263,55 @@ df09_dev, df09_holdout = train_test_split(df09,test_size = 0.2,random_state = 20
 
 当前教师仅更新Notebook Markdown，唯一学生代码格的source、execution_count=7、完整stdout及metadata保持原样。代码格整体规范化JSON摘要前后均为2128e38eb8a5e8f4eead420fb661c94121304bdebc2b77fc4276e8752a724ac6；静态nbformat校验通过，不是教师执行Notebook。更新前学生保存版SHA256为83d99ef03d626833446ad465d8b98f0571ff03ddc1f8c0cebe366593d921f27b；更新后Notebook 12131字节，SHA256 8c25caa95e5354d2af9f41d7d43bbd3f80c5b527aa16673504f26fbd7d5da044，Git blob 4ee2221721370c0a3727e9dc13756dfc8ce8f7fb。原CSV SHA256仍1486c2ffd5758f68fdd79b4d1cd3743e6e7aa6363d5e2dfcc43fbb67a468f165。
 
-### 下一小步：保存分组身份（未交代码）
+### 当时下一小步：保存分组身份（历史，当前结果见后）
 
 新建代码格，从df09_dev和df09_holdout各选sample_id一列，分别保存为data/unit09-dev-ids.csv和data/unit09-holdout-ids.csv。使用.to_csv(..., index=False)；index=False是不额外写入pandas行索引，sample_id列仍保留。输入为120×3和30×3，选列后为120×1和30×1，输出是对应数量的一列CSV。先发两行代码检查，暂不运行；不重新划分、不打印/保存UTS目标到这两个ID文件。
 
-参考：[pandas CSV写入说明](https://pandas.pydata.org/docs/user_guide/io.html#writing-out-data)。两个ID文件尚未生成，不预填文件核验或成功输出。保存后再核验ID唯一、开发/保留两组互斥且并集150，之后才进入开发数据内部的学习曲线划分。
+参考：[pandas CSV写入说明](https://pandas.pydata.org/docs/user_guide/io.html#writing-out-data)。当时两个ID文件尚未生成，未提前验收；现已由下方实践2记录补齐全部首稿、提示、真实修正与文件核验。
+
+## 实践第2步：CSV导出的两稿错误与修正（2026-10-30）
+
+### 第一稿：路径赋值与对象引用
+
+```python
+data/unit09-dev-ids.csv = df09[["sample_id"]].to_csv(df09.dev, index=False)
+data/unit09-holdout-ids.csv = df[["sample_id"]].to_csv(df09.holdout, index=False)
+```
+
+学生实际代码格[9]：SyntaxError: cannot assign to expression here. Maybe you meant '==' instead of '='? (18608364.py, line 13)，无stdout。语法分析阶段整格停止；其他潜在变量/属性问题仅为静态检查，不编造额外实际异常。教师给通用模板`table.to_csv("data/example.csv", index=False)`，解释表格/引号路径的调用位置、无需路径=，及下划线变量不同于点号属性访问；原本先请学生只改开发行、在聊天发送。
+
+### 第二稿：组别和选列已对，路径引号与逗号仍缺
+
+```python
+df09_dev[["sample_id"]].to_csv(data/unit09-dev-ids.csv index=False)
+df09_holdout[["sample_id"]].to_csv(data/unit09-holdout-ids.csv, index=False)
+```
+
+学生实际代码格[11]：SyntaxError: invalid syntax. Perhaps you forgot a comma? (4058408734.py, line 13)，无stdout，整格未执行。教师提示两行路径都加双引号，给第一条路径的字符串片段，并指出第一行路径与index=False之间补逗号；未代写完整实际两行。index=False始终正确。执行计数不证明其他未见尝试。
+
+### 第三稿、保存及真实文件证据
+
+```python
+df09_dev[["sample_id"]].to_csv("data/unit09-dev-ids.csv", index=False)
+df09_holdout[["sample_id"]].to_csv("data/unit09-holdout-ids.csv", index=False)
+```
+
+学生在两轮语法提示后提交正确保存代码截图，两个ID文件已实际生成。第一次只读时磁盘Notebook仍为[11]错误版；教师请求Ctrl+S，学生明确回复“已保存”，随后只读核验为[12]正确源码、stdout为(120, 3) (30, 3)、无error输出。记提示后修正并成功运行，不记首次独立完成、独立复查或教师批准后才运行；教师未提供本任务完整两行代写答案。
+
+两个CSV均只含sample_id列：开发120行、保留测试30行，组内唯一、组间互斥，并集与原CSV150个ID完全一致。教师仅在原始ID序列上用预设RandomState(20261030)重建排列以核对文件顺序，两组顺序均精确匹配；未使用UTS目标列分析、拟合模型或评分，不把元数据核验冒充学生模型实验。
+
+| 文件 | 实际数据shape | SHA256 |
+| --- | --- | --- |
+| [unit09-dev-ids.csv](data/unit09-dev-ids.csv) | (120, 1) | 3f522e8f90a26000a1fa0fd4c46efeacad5cfd5a0b91b2e227bff991be2e8ae6 |
+| [unit09-holdout-ids.csv](data/unit09-holdout-ids.csv) | (30, 1) | 04221b8d952d5f35e62255214998fbe3499917c361a81675bd1ba23017b3789a |
+
+
+上表shape为CSV数据行数×列数，不含表头。开发ID文件1091字节、Git blob 8c39ae8a0c144a7af091066f0e1a3af57685c573；保留ID文件281字节、Git blob 3e96fdc163b19b9d100d76e3edc9c49e96b92acc。源CSV SHA256仍1486c2ffd5758f68fdd79b4d1cd3743e6e7aa6363d5e2dfcc43fbb67a468f165。全部为新synthetic教学数据的身份清单，不是实验目标或模型性能。
+
+### Notebook归档与当前下一步
+
+本轮原样归档学生确认保存的Notebook，教师没有编辑任何Markdown、代码、输出或metadata，也没有执行Notebook。文件12490字节，SHA256 ee4f7edb310945d36ef1a94b635449fd2327b68b890412aceb11d45872ed3002，Git blob 8610788c52f718e176c61a108f6134994a4b9945；唯一学生代码格[12]、stdout与metadata整体规范化摘要为13269a0cf0065ca31463eb078da3fd4d1558442f8c4a273b17f94ecc2832cb72。仅做nbformat静态校验，未声称重启/Run All或独立复现。原Notebook早期任务说明仍作为已有教学记录，当前进度以本节及progress为准。
+
+当前下一步：新建代码格，用train_test_split只划分df09_dev，依次接收为df09_train_pool和df09_val；test_size=0.2、random_state=20261031；打印两表shape，先发代码检查，暂不运行。
+
+输入是已封存测试后留下的120×3开发表，预期得到96×3训练样本池和24×3固定验证表。训练池供后续12/24/48/72/96各训练量取样，每个点重新拟合完整Pipeline；同一24条验证样本评价所有这些点。此处test_size参数名只表示分给第二组的比例，第二组在本步骤的角色是验证集。30条holdout继续封存，不参与曲线、CV或模型选择。96/24尚未实际执行，不能提前记作运行输出。
