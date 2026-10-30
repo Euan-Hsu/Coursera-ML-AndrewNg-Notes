@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设和已生成的新synthetic CSV；尚无学生代码、运行输出或模型评价分数。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；尚无模型评价分数。
 
 ## 工作簿与运行环境
 
@@ -10,7 +10,7 @@ Notebook：`unit09-learning-curves-kfold-cross-validation.ipynb`。本地工作�
 
 ## 实验预设（在数据生成和查看结果前固定）
 
-本单元只使用全新的 **synthetic data（人工模拟数据）**，不复用单元08的CSV、训练/验证/测试分组或已知分数。以下数量和设置为生成前固定的实验设计。2026-10-30教师仅完成CSV生成，尚未划分数据或执行模型，不能把计划当实际评价结果。
+本单元只使用全新的 **synthetic data（人工模拟数据）**，不复用单元08的CSV、训练/验证/测试分组或已知分数。以下数量和设置为生成前固定的实验设计。2026-10-30已完成CSV准备与学生120/30划分；96/24、K折和模型评价仍未执行，不能把计划当实际评价结果。
 
 - 教学问题：单一输入 ZrB2_wt_pct → 模拟目标 UTS_MPa。wt.%数值1表示1 wt.%，UTS单位MPa；关系为数学教学设定，不是7085Al强化机制或实验标定。
 - 新数据配方：NumPy default_rng(20261029)；先生成150个Uniform(0,2)输入，再生成150个Normal(0,6)噪声；模拟目标为465 + 60*x - 24*x**2 + noise。不按预期图形重抽样或更换种子。
@@ -209,8 +209,62 @@ Q11题面：“当训练样本从48条增加到96条时，橙色验证误差还�
 
 Notebook仅更新教师Markdown，保留8格结构和唯一纯注释代码格。代码格整体（含source、execution_count、outputs、metadata）规范化JSON摘要SHA256前后相同：e98788da2025539910a5b9c4789885ba7d56213c69e62fd2975022ae6dcd7eb0；执行计数null、outputs=[]。nbformat静态校验通过，不是Notebook执行。更新后Notebook SHA256：d3f1f50ff05daccb6d1c15ff032c8b3a43b9fcd5b821ecb2e123cb11514c15f2，Git blob：5f2be24b1dc999e000d6d0aefde8a21fdfb686d3。
 
-### 当前学生任务（未交代码）
+### 实践第1步原任务（历史，现已提示后完成）
 
 在单元09 Notebook的已有代码格中，导入pandas和train_test_split；读取data/unit09-learning-curves-synthetic.csv为df09；保持原CSV行顺序，用test_size=0.2、random_state=20261030一次划分为df09_dev和df09_holdout；只打印两者shape，先发代码检查，不运行或展示目标。
 
 输入df09预期(150,3)，输出开发df09_dev预期(120,3)、封存df09_holdout预期(30,3)，均含ID/输入/目标三列；sample_id不作为feature。输出对象与shape是预期，不是实际运行证据。先查代码再由学生执行；保持CSV原行序、不按目标排序/筛样本，不预览封存测试目标、统计量或图。之后保存分组ID，并仅在开发数据内构建曲线与K折。除数据生成阶段已完成外，全部候选/随机种子和既定协议不变。
+
+## 实践第1步：真实首错、提示与修正运行（2026-10-30）
+
+### 学生首次提交的完整源码
+
+```python
+import pandas as pd
+df09 = pd.read_csv("data/unit09-learning-curves-synthetic.csv")
+
+X09 = df09[["ZrB2_wt_pct"]]
+y09 = df09[["UTS_MPa"]]
+
+from sklearn.model_selection import train_test_split
+df09_dev, df09_holdout = train_test_split(X09,y09,test_size = 0.2,random_state = 20261030)
+print(df09_dev.shape, df09_holdout.shape)
+```
+
+本地Notebook首稿代码格[6]真实错误：
+
+```text
+ValueError: too many values to unpack (expected 2)
+```
+
+该次print未执行，无shape输出。读取和双中括号取列正确；错误在四返回对象仅赋给两变量，不是CSV/随机种子/泄漏问题。
+
+### 提示与纠正层级
+
+学生首稿已实际运行并保存为代码格[6]，报ValueError: too many values to unpack (expected 2)，没有shape输出。教师解释train_test_split对每个输入返回两份，两输入X/y会返回四份，提示本步整表划分以保留sample_id。学生随后原答“df09”，属提示后的对象识别；教师再明确提示以df09替换X09,y09，尚未给完整修正代码。学生修正版已运行为[7]，截图与本地保存版一致，stdout为(120, 3) (30, 3)。记提示后修正并成功运行，不记首次独立完成或延迟独立复查；不能由执行计数6/7推断未见的其他尝试。
+
+修正后的实际划分行：
+
+```python
+df09_dev, df09_holdout = train_test_split(df09,test_size = 0.2,random_state = 20261030)
+```
+
+学生[7]保存的真实stdout：
+
+```text
+(120, 3) (30, 3)
+```
+
+教师未执行学生代码或补算分组，以上取自学生截图和已保存Notebook。初稿中的split函数已被调用但赋值解包失败，不能写成从未调用，也不能由其错误假定保留测试已被用于选模。当前无error不抹去此前真实异常。
+
+### 当前证据与文件
+
+这是150条新synthetic教学数据的实际读取/划分证据，不是模型评价或材料实验性能。test_size=0.2、random_state=20261030与原CSV行序保持；df09_dev为120×3，df09_holdout为30×3，三列sample_id/ZrB2_wt_pct/UTS_MPa同行保留。保留测试目前仅展示shape，未见目标预览、统计或模型使用。分组ID尚未导出，不宣称身份清单已经封存到文件；后续曲线/CV仅用开发数据。无模型fit/predict/评分、96/24内部划分或K折运行，正式8题未开始。
+
+当前教师仅更新Notebook Markdown，唯一学生代码格的source、execution_count=7、完整stdout及metadata保持原样。代码格整体规范化JSON摘要前后均为2128e38eb8a5e8f4eead420fb661c94121304bdebc2b77fc4276e8752a724ac6；静态nbformat校验通过，不是教师执行Notebook。更新前学生保存版SHA256为83d99ef03d626833446ad465d8b98f0571ff03ddc1f8c0cebe366593d921f27b；更新后Notebook 12131字节，SHA256 8c25caa95e5354d2af9f41d7d43bbd3f80c5b527aa16673504f26fbd7d5da044，Git blob 4ee2221721370c0a3727e9dc13756dfc8ce8f7fb。原CSV SHA256仍1486c2ffd5758f68fdd79b4d1cd3743e6e7aa6363d5e2dfcc43fbb67a468f165。
+
+### 下一小步：保存分组身份（未交代码）
+
+新建代码格，从df09_dev和df09_holdout各选sample_id一列，分别保存为data/unit09-dev-ids.csv和data/unit09-holdout-ids.csv。使用.to_csv(..., index=False)；index=False是不额外写入pandas行索引，sample_id列仍保留。输入为120×3和30×3，选列后为120×1和30×1，输出是对应数量的一列CSV。先发两行代码检查，暂不运行；不重新划分、不打印/保存UTS目标到这两个ID文件。
+
+参考：[pandas CSV写入说明](https://pandas.pydata.org/docs/user_guide/io.html#writing-out-data)。两个ID文件尚未生成，不预填文件核验或成功输出。保存后再核验ID唯一、开发/保留两组互斥且并集150，之后才进入开发数据内部的学习曲线划分。

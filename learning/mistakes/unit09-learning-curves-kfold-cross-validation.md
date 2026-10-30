@@ -85,3 +85,27 @@ Q6首次原答：“下降”，读图正确。Q7首次原答：“变好，依�
 教师连接（非学生自述）：结合前面“用直线描述弯曲趋势”的模型限制设定，图B可用来示意高Bias（欠拟合）的一种表现：模型连训练数据的主要规律也未描述充分，继续增加同类样本的改善可能有限。这是有背景条件的synthetic概念说明，不是已运行模型的诊断；不能仅凭两线接近、任意5 MPa教学目标或曲线趋平就排除噪声等其他原因。
 
 Q12首次原答（2026-10-30）：“左侧12条，模型训练误差显著低于验证误差，为过拟合”。本题问常见表现，学生正确判断过拟合并给出训练误差显著低于验证误差的依据，记首次回答正确；不因未主动补充题外限制而降为提示后。教师将其联系到高Variance（方差大）常见信号，但不把单点差距当成真实模型原因的确定证明。 不新增错误，不抹去原Q0/Q5首错或教师帮助，也不当作它们的独立复查。当前进入新CSV读取/封存代码练习，尚无学生源码或真实异常，不预设新错。
+
+## 3. train_test_split输入对象数与返回值数量（实践1，提示后修正）
+
+- 首稿：
+
+```python
+import pandas as pd
+df09 = pd.read_csv("data/unit09-learning-curves-synthetic.csv")
+
+X09 = df09[["ZrB2_wt_pct"]]
+y09 = df09[["UTS_MPa"]]
+
+from sklearn.model_selection import train_test_split
+df09_dev, df09_holdout = train_test_split(X09,y09,test_size = 0.2,random_state = 20261030)
+print(df09_dev.shape, df09_holdout.shape)
+```
+
+- 实际错误：Notebook代码格[6]保存ValueError: too many values to unpack (expected 2)，没有stdout；不是仅静态风险。
+- 原因：传入X09/y09两个对象，返回四份，仅有df09_dev/df09_holdout两个接收变量。两输入用法本身正确；本任务为保留sample_id而先分完整表，不能把先取X/y列误判泄漏。
+- 实际提示过程：学生首稿已实际运行并保存为代码格[6]，报ValueError: too many values to unpack (expected 2)，没有shape输出。教师解释train_test_split对每个输入返回两份，两输入X/y会返回四份，提示本步整表划分以保留sample_id。学生随后原答“df09”，属提示后的对象识别；教师再明确提示以df09替换X09,y09，尚未给完整修正代码。学生修正版已运行为[7]，截图与本地保存版一致，stdout为(120, 3) (30, 3)。记提示后修正并成功运行，不记首次独立完成或延迟独立复查；不能由执行计数6/7推断未见的其他尝试。
+- 修正关键行：`df09_dev, df09_holdout = train_test_split(df09,test_size = 0.2,random_state = 20261030)`。
+- 实际修正结果：学生代码格[7]stdout为`(120, 3) (30, 3)`，本地保存与截图一致，无error；教师未运行。
+- 防复发自检：先数输入了几个数据对象，再数应接收的结果个数；每个对象产生两份。此为教师建议，不冒充学生已独立总结。
+- 当前状态：提示后修正并成功运行；不同情境独立复查尚未进行，不计正式8题，不抹去首错。下一步仅导出sample_id，目标/模型尚未开放；没有证据把此错误归为与Q0/Q5相同的重复概念错误。

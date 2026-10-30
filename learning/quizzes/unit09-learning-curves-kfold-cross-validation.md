@@ -146,6 +146,16 @@ Q7题面：在这张示意图表达的情境中，虽然训练MAE上升，模型
 
 本题没有提示后纠正，不是原Q0/Q5的独立复查，不计结课8题。下一步仅为教学实践第1步：在单元09 Notebook的已有代码格中，导入pandas和train_test_split；读取data/unit09-learning-curves-synthetic.csv为df09；保持原CSV行顺序，用test_size=0.2、random_state=20261030一次划分为df09_dev和df09_holdout；只打印两者shape，先发代码检查，不运行或展示目标。 尚未提交代码，不预填通过或运行结果。
 
+## 实践检查1：读取与整表划分（提示后修正，非正式8题）
+
+学生首稿已实际运行并保存为代码格[6]，报ValueError: too many values to unpack (expected 2)，没有shape输出。教师解释train_test_split对每个输入返回两份，两输入X/y会返回四份，提示本步整表划分以保留sample_id。学生随后原答“df09”，属提示后的对象识别；教师再明确提示以df09替换X09,y09，尚未给完整修正代码。学生修正版已运行为[7]，截图与本地保存版一致，stdout为(120, 3) (30, 3)。记提示后修正并成功运行，不记首次独立完成或延迟独立复查；不能由执行计数6/7推断未见的其他尝试。
+
+首稿完整代码与实际错误见[练习档](../exercises/unit09-learning-curves-kfold-cross-validation.md)和[错题第3项](../mistakes/unit09-learning-curves-kfold-cross-validation.md)。提示后学生“df09”只证明对象识别，随后教师替换提示和[7]源码/输出才构成修正运行证据；不回写成首次完整代码正确。教师未运行，未发生独立复查。
+
+这是150条新synthetic教学数据的实际读取/划分证据，不是模型评价或材料实验性能。test_size=0.2、random_state=20261030与原CSV行序保持；df09_dev为120×3，df09_holdout为30×3，三列sample_id/ZrB2_wt_pct/UTS_MPa同行保留。保留测试目前仅展示shape，未见目标预览、统计或模型使用。分组ID尚未导出，不宣称身份清单已经封存到文件；后续曲线/CV仅用开发数据。无模型fit/predict/评分、96/24内部划分或K折运行，正式8题未开始。
+
+当前只布置：新建代码格，从df09_dev和df09_holdout各选sample_id一列，分别保存为data/unit09-dev-ids.csv和data/unit09-holdout-ids.csv。使用.to_csv(..., index=False)；index=False是不额外写入pandas行索引，sample_id列仍保留。输入为120×3和30×3，选列后为120×1和30×1，输出是对应数量的一列CSV。先发两行代码检查，暂不运行；不重新划分、不打印/保存UTS目标到这两个ID文件。 尚无该新代码或文件，不能提前验收。
+
 ## 结课评估安排
 
 完成教学、学生代码和实际曲线解释之后，再逐题发布正式题目，不预填答案或分数。
