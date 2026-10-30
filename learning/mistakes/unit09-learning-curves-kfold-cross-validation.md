@@ -109,3 +109,35 @@ print(df09_dev.shape, df09_holdout.shape)
 - 实际修正结果：学生代码格[7]stdout为`(120, 3) (30, 3)`，本地保存与截图一致，无error；教师未运行。
 - 防复发自检：先数输入了几个数据对象，再数应接收的结果个数；每个对象产生两份。此为教师建议，不冒充学生已独立总结。
 - 当前状态：提示后修正并成功运行；不同情境独立复查尚未进行，不计正式8题，不抹去首错。下一步仅导出sample_id，目标/模型尚未开放；没有证据把此错误归为与Q0/Q5相同的重复概念错误。
+
+## 4. CSV保存调用、路径字符串与变量名（实践2，纠正中，2026-10-30）
+
+### 首次源码及真实异常
+
+```python
+data/unit09-dev-ids.csv = df09[["sample_id"]].to_csv(df09.dev, index=False)
+data/unit09-holdout-ids.csv = df[["sample_id"]].to_csv(df09.holdout, index=False)
+```
+
+本地Notebook代码格[9]实际保存SyntaxError: cannot assign to expression here. Maybe you meant '==' instead of '='? (18608364.py, line 13)。语法分析失败，没有stdout；两个文件未生成。文件路径不能作为这里的赋值左侧，应作为带引号的输出路径传入.to_csv。另有静态问题：开发组来源应为df09_dev，保留组应为df09_holdout；df09.dev/df09.holdout是属性访问，与下划线变量名不同。当前只有SyntaxError真实发生，不编造NameError或AttributeError为第二个实际异常。
+
+### 教师第一次提示与学生第二稿
+
+教师提供通用模板`table.to_csv("data/example.csv", index=False)`，说明表格对象/路径各自位置、无需路径=调用，并明确df09_dev不同于df09.dev；原本只要求先改开发组一行、先在聊天发来。未给完整实际两行答案。
+
+学生第二稿原文：
+
+```python
+df09_dev[["sample_id"]].to_csv(data/unit09-dev-ids.csv index=False)
+df09_holdout[["sample_id"]].to_csv(data/unit09-holdout-ids.csv, index=False)
+```
+
+本地Notebook第二稿追加在同一代码格，execution_count=11，真实输出SyntaxError: invalid syntax. Perhaps you forgot a comma? (4058408734.py, line 13)，没有stdout；整个代码格在语法分析阶段停止，不能宣称本轮重新读取/划分或执行了保存。两个ID文件实际均不存在。学生表格来源与双中括号取列已经提示后改对；路径缺引号仍在，第一行另缺路径参数与index=False之间的逗号。
+
+这是同一保存调用问题的继续纠正，已出现路径未加引号的重复现象，保留两稿与每轮真实帮助。index=False一直正确，不另立参数错误；不将Python文件写入语法问题冒充学习曲线/K折概念错误。
+
+### 当前提示与状态
+
+本轮仅提示两行路径都须加引号，因为它们是文件名字符串，未加引号的/与-会被解释为运算符；具体第一条路径应写成"data/unit09-dev-ids.csv"。第一行须在路径后补逗号，再写index=False。让学生改好两行再发，先不点运行；不提供本任务完整两行代写答案。尚未收到第三稿，不标已纠正或独立复查。
+
+当前Notebook SHA256为d7fd52443cd3b2020653bf24e3b1cf3e1131087d38a95c9ee76b59a300170b9a，教师未修改/执行。此前[7]120/30划分成功仍有效为历史运行证据，不能因当前语法错误倒写为从未成功；也不能仅凭[11]推断内核旧变量状态或其他未见尝试。纠正后需学生运行并生成仅含sample_id的120/30行文件，随后核验唯一性、互斥、并集与顺序。正式8题未开始，无模型/测试目标评价。
