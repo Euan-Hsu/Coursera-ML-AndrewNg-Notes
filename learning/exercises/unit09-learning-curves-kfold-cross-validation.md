@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；尚无模型评价分数。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；尚无模型评价分数。
 
 ## 工作簿与运行环境
 
@@ -379,8 +379,52 @@ Q13学生首次原答“需要有完整的数据样本”为相关概括，教�
 
 原source/开发ID/保留ID/分组manifest的四个SHA256均与上一检查点相同；选取规则仍是固定池的前缀，未换数据/排序/seed或查看保留测试目标。正式8题未开始。
 
-### 下一步：创建并拟合首个12样本管道（未交代码）
+### 实践6原任务：创建并拟合首个12样本管道（现已完成）
 
 新建代码格，导入并复用已学的Pipeline（或make_pipeline）、StandardScaler和LinearRegression；创建新管道pipe09_linear12，顺序为StandardScaler→LinearRegression，再让完整管道只用原始X09_12、y09_12调用fit。先发导入、构造与fit代码检查，暂不运行；不提供本任务完整代码。
 
-输入是同一批12条synthetic训练样本的X09_12/y09_12，均为(12,1)。标准化器仅在这12条输入中学习统计量，回归也只在这12条上拟合。fit返回训练后的Pipeline对象本身；此步尚未生成预测数组或误差。固定24条验证和30条保留测试均不参与fit，96条训练池只提供本次前12条。当前仍无任何单元09模型fit/predict/MAE或K折真实输出，不能把下一任务记成已执行。
+输入是同一批12条synthetic训练样本的X09_12/y09_12，均为(12,1)。标准化器仅在这12条输入中学习统计量，回归也只在这12条上拟合。fit返回训练后的Pipeline对象本身；此步尚未生成预测数组或误差。固定24条验证和30条保留测试均不参与fit，96条训练池只提供本次前12条。此处是原任务的边界说明；最新[4]已核验fit成功，predict/MAE/K折仍未执行，见后文实际证据。
+
+## 实践6：首个线性管道的真实fit（2026-10-31）
+
+### 学生实际源码
+
+```python
+# 训练第一个模型
+from sklearn.preprocessing import StandardScaler
+scaler09_12 = StandardScaler()#创建标准化器
+
+from sklearn.linear_model import LinearRegression 
+reg09_12 = LinearRegression()#创建回归器
+
+from sklearn.pipeline import Pipeline #引入管道：多项式展开，标准化，回归模型("步骤名称", 工具对象)
+pipe09_linear12 = Pipeline([
+    ("scale", scaler09_12),
+    ("reg", reg09_12),
+])
+pipe09_linear12.fit(X09_12, y09_12)
+```
+
+学生首次提交的截图代码正确：新建StandardScaler/LinearRegression对象，以scale、reg两步构成pipe09_linear12，并对完整管道调用fit(X09_12,y09_12)。截图[4]显示返回Pipeline结构。首次读磁盘时仍为引用单元08变量的未执行旧草稿，教师请求保存；随后读到与截图一致的正确[4]源码和execute_result，学生也明确回复“已保存”。这是保存版本一致性处理，不把旧草稿算作本次提交首错或实际异常；本步首次代码正确并实际拟合，无追加代码调试提示。
+
+当前三个代码格计数为[2]/[3]/[4]，无error。X09_12/y09_12已实际为(12,1)，完整管道的fit源码只传入这两表；标准化器与回归均在对应12条训练样本中拟合。24条固定验证、30条holdout未参与fit。Pipeline图和text/plain输出是fit返回对象的结构展示，不是预测数组或误差分数；没有借此宣称性能好或材料实验成功。
+
+保存的text/plain实际为：
+
+```text
+Pipeline(steps=[('scale', StandardScaler()), ('reg', LinearRegression())])
+```
+
+实际steps只有标准化和一次线性回归；源码注释中的‘多项式展开’为旧说明，不据注释把此管道归为多项式/Ridge方案。没有实际NameError/AttributeError；最初磁盘旧草稿的execution_count为null且无outputs，不将其作为截图版本首错或冒充已运行单元08数据。当前源代码与截图一致，按首次提交正确验收。
+
+### 保存与边界
+
+教师原样归档学生已保存的Notebook，未编辑Markdown/source/outputs/metadata，也未执行模型或补算分数。45534字节，SHA256 ffafa1640afd161d241457fc29080eafe23a47efd5e6d296b11aad35c12cd656，Git blob e88a62a05c182ca72e6dfc5612c1ad4d9022c507；全部3代码格规范化JSON摘要100141fcd5dd732de099a130952e1e247b21e2aa69c7307cfb03727658921fdf。nbformat仅静态校验，完整execute_result中的Pipeline HTML/text输出保留。Notebook保存了代码和显示输出，不据此声称已导出训练模型二进制文件或完成重启复现。
+
+source CSV、外层开发/holdout ID CSV、分组manifest的四个hash均未改；30条保留测试仍封存。当前仅有训练成功的证据，没有真实预测、MAE、CV或曲线趋势，正式8题未开始。
+
+### 下一步：训练12条与固定验证24条的预测（未交代码）
+
+新建代码格，统一使用已训练pipe09_linear12的predict，分别以原始X09_12和原始X09_val为输入，保存为y09_12_pred、y09_val_pred，再打印两者shape。先发两次预测与shape打印代码检查，暂不运行，不提供完整代码代写。
+
+同一个12样本模型产生两份synthetic UTS预测，分别用于后续该学习曲线点的训练/验证MAE。输入shape依次(12,1)、(24,1)，当前二维目标下预测预期也为(12,1)、(24,1)，单位MPa。Pipeline在预测时沿用训练12条时学到的标准化统计量来转换原始输入；本步只调用predict，不新增fit或独立重拟合验证标准化。当前尚无预测数组、MAE、学习曲线、K折或保留测试评分。
