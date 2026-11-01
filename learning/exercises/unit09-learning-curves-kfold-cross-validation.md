@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，当前待累积绘图列表，完整曲线与K折仍未运行。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，当前待plot数据配对，完整曲线与K折仍未运行。
 
 ## 工作簿与运行环境
 
@@ -668,7 +668,7 @@ for m in [12, 24, 48, 72, 96]:
 
 当前Notebook原字节归档18260字节，SHA256 1a01d3abc56257db5f7907b041b46e866bfed3f2b32cb5ae8da1c4bcddf48ba3，Git blob 2d257959d6ebe88402eabcc1a3c2df3434b405bc；3代码格规范化JSON摘要7415492f1c708575fca502763163eaaa4faefb3f0b251166ac302fdb495dd9ae，计数[1]/[2]/[9]，无error。教师仅只读/nbformat静态校验，未运行模型/预测/MAE、未编辑Notebook source/outputs/metadata；不推定重启或Run All。源CSV、开发ID、保留ID、manifest四hash与前次一致；未重新生成数据或读取测试目标作分析。
 
-### 当前下一步：为绘图累积每轮MAE（待学生新增代码）
+### 当时任务：为绘图累积每轮MAE（历史，示范后已完成）
 
 现有循环技术实现正确；尚未建立累计列表是绘图准备的后续任务，不新增错题。教师解释：同名MAE变量每轮重新赋值，循环结束后该变量仅保留最后一轮值；五轮打印仍保留在输出中。画五个点需把五轮原始数值按顺序收集。
 
@@ -682,3 +682,83 @@ numbers.append(12)
 这是Python列表语法示例，12沿用预设训练量的整数，不是模拟性能或新MAE结果；示例后列表为[12]。空列表用[]建立，append把一个数值放到末尾，示例不拟合模型。
 
 请学生仅补充并标明位置：循环前建立train_mae09与val_mae09两个空列表；循环内各MAE计算后，将本轮原始MAE变量追加到对应列表；循环后打印两个列表。每个列表应有5个数，依次对应12/24/48/72/96，用完整数值绘图，三位小数仅用于显示。先发新增行及位置/缩进检查，暂不运行；不提供本练习完整代码，不预先作图或解释趋势。
+
+## 实践12：两份MAE列表已保存（2026-11-01）
+
+实践12的实际帮助：教师先提供通用numbers=[]/numbers.append(12)列表示例及位置要求；学生问“空列表怎么建立”，教师给出完整两行train_mae09=[]、val_mae09=[]及循环前顶格初始化说明。学生再说“循环内也不会”，教师给出完整两行train_mae09.append(mae09_train_m)、val_mae09.append(mae09_val_m)，说明在两项MAE计算后、循环内同级缩进。学生随后提交“已保存”。这属于两次求助后的局部代码直接示范，没有学生错误源码/实际异常，不登记成首错后纠正，也不算完全独立实现列表收集。
+
+保存Notebook[15]实际实现正确：两个空列表在for前初始化；每轮算出两项MAE后，在循环内部按同样缩进append原始数值；print(train_mae09, val_mae09)位于循环外顶格。一次print同时打印两列表与分两行等效，不额外设格式门槛。初始化/append按教师示范正确整合，循环外打印位置本次首份代码正确；输出两列表各5个数，顺序与m=12/24/48/72/96对应，无error。
+
+本次由学生实际保存的stdout首次取得两份完整精度数列（新synthetic data上的模型MAE，MPa，未由教师重算）：
+
+```text
+train_mae09 = [5.837957055417992, 6.423736953125652, 6.92152464505865, 7.698675774111984, 7.300741952810969]
+val_mae09 = [7.249570499130854, 7.286411941140258, 7.131759288817125, 6.854012479402068, 6.909135340166323]
+```
+
+这不是前次三位小数显示值的补算；原三位显示与列表相符，原值未先格式化成字符串。
+
+只在固定开发分组中重跑既定一次线性实验收集数值；每轮完整Pipeline在相应m条训练部分fit，固定验证24、封存测试30及全部四seed不变。源CSV/ID/manifest四hash不变。尚无实际曲线图或学生独立读图，当前不解释实际曲线趋势或提前诊断。预设Ridge、本单元K折与正式8题均未完成；本结果不属于材料实验性能或新的独立泛化证据。
+
+学生实际保存的循环与列表源码：
+
+```python
+#for循环补齐预设训练量
+
+#循环前：建立两个空列表 train_mae09、val_mae09。用 [] 建立空列表：
+train_mae09 = []
+val_mae09 = []
+
+for m in [12, 24, 48, 72, 96]:
+    print(m)
+    
+    X09_m = X09_pool.iloc[:m]  #取前m行
+    y09_m = y09_pool.iloc[:m]
+    print(X09_m.shape, y09_m.shape)
+    
+    scaler09_m = StandardScaler()#创建标准化器
+    reg09_m = LinearRegression()#创建回归器
+    pipe09_linear_m = Pipeline([
+        ("scale", scaler09_m),
+        ("reg", reg09_m),
+    ])
+    pipe09_linear_m.fit(X09_m, y09_m)
+    
+    y09_m_pred = pipe09_linear_m.predict(X09_m)
+    y09_valm_pred = pipe09_linear_m.predict(X09_val)
+    print(y09_m_pred.shape, y09_valm_pred.shape)
+    
+    mae09_train_m = mean_absolute_error(y09_m, y09_m_pred)#结果变量 = 函数名称(真实值, 预测值)
+    print(f"训练MAE:  {mae09_train_m:.3f} MPa")#f让花括号中的变量插入文本，:.3f 表示显示小数点后三位。这只改变显示，原变量的数值不变。
+    mae09_val_m = mean_absolute_error(y09_val, y09_valm_pred)#计算验证集MAE
+    print(f"验证MAE: {mae09_val_m:.3f} MPa")
+
+    # 循环内用 .append() 保存本轮结果
+    train_mae09.append(mae09_train_m)
+    val_mae09.append(mae09_val_m)
+
+print(train_mae09, val_mae09)
+```
+
+当前Notebook原字节归档18835字节，SHA256 75c00ec6c9f54a7de9dbcdfbdaab560cc69bcaa3c5843aead52512d41a6a660b，Git blob 59324d1f849253ad88c02e558ed19e348d9931fd；3代码格规范化JSON摘要2fdfb40ddd4a8f311e33713263bb9d209ff8f72754bb066cfa4255efc7813783，计数[1]/[2]/[15]，无error。教师仅只读/nbformat静态验证，未执行模型/预测/MAE、未编辑Notebook source/outputs/metadata；不推定重启/Run All。完整精度MAE来自学生保存的列表stdout。源CSV、开发ID、保留ID、manifest四hash均未变。
+
+### 当前下一步：补充两条实际学习曲线的plot调用（待学生代码）
+
+每个训练量与两个MAE列表相同位置的数值配成一个点；三份列表长度均5。教师示范通用plt.plot(x, y, marker="o", label="曲线名称")写法：两个等长一维数值序列作为输入，创建一条带圆点的折线；尚未执行或生成图。不给两条实际数据配对调用的完整答案，由学生分别使用train_mae09和val_mae09补全。
+
+教师提供固定显示框架，使第一张图就有坐标、单位、模型/synthetic标题及图例；核心两条plot调用留学生：
+
+```python
+import matplotlib.pyplot as plt
+train_sizes09 = [12, 24, 48, 72, 96]
+
+# 在这里补充两行 plt.plot(...)
+
+plt.xlabel("Training samples")
+plt.ylabel("MAE (MPa)")
+plt.title("Linear regression - synthetic data")
+plt.legend()
+plt.show()
+```
+
+训练曲线图例用Training MAE，验证用Validation MAE；先提交补全代码检查，暂不运行。随后由学生运行、保存实际图，再独立判断趋势与可能原因；教师不预告实际图结论或先画一张代替学生实现。
