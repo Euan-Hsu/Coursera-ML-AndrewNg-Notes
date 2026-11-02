@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，plot首稿实际ValueError已保留，Q16讲解后首次正确，plot已提示后修正并实际出图，Q17/Q18分段读图及Q19算例已有答案，预设Ridge96条fit已运行，其五训练量循环首稿报错，当前待局部修正，完整曲线与K折仍未运行。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，plot首稿实际ValueError已保留，Q16讲解后首次正确，plot已提示后修正并实际出图，Q17/Q18分段读图及Q19算例已有答案，预设Ridge96条fit已运行，其五训练量循环首稿报错，提示后已修正并取得Ridge实际图，当前Q21读图待答，完整曲线与K折仍未运行。
 
 ## 工作簿与运行环境
 
@@ -939,6 +939,53 @@ print(ridge_train_mae09, ridge_val_mae09)
 
 当前Notebook原字节归档105512字节，SHA256 dfc247cf245319a8180409694f4bdaebd14eda2ed69a7f183b296f5b7b398e11，Git blob 8cc57280c871f7eb9a6a356bb9d33a458e59a1d6；5代码格规范化JSON摘要8deb20d7cb9691aa02c2014928a075d5616aed36e8960ae64a75ba1f1fbc93f0，计数[1]/[2]/[3]/[9]/[10]，保留SyntaxWarning stderr、1个TypeError及完整traceback。教师仅只读/nbformat静态验证，未执行模型/预测/评分或编辑Notebook source/outputs/metadata，不推定重启/Run All。源CSV、开发ID、保留ID、manifest四hash与前次一致。
 
-### 当前下一步：实践15局部修正（待学生两段代码）
+### 当时任务：实践15局部修正（历史，提示后已修正并运行）
 
 先只修两处：Pipeline第一项与下一项之间的分隔符；for之前两份新结果列表初始化。请学生提交“循环前的初始化”与“循环内修正后的Pipeline构造”两小段，并保留正确缩进，暂不运行、不需重贴整个循环。教师未提供完整正确循环，当前未答，不提前记提示后修正或运行成功。
+
+## 实践15纠正与实践16实际Ridge曲线（2026-11-02）
+
+实践15第6项已在教师定位/提示后修正。此前保存[11]在for前顶格加入ridge_train_mae09=[]/ridge_val_mae09=[]，Pipeline第一项后逗号已补，五轮拟合/预测/MAE正常运行；本次[12]保留相同正确实现并追加绘图后重跑。不是首次独立完整写对循环；[10]首稿的实际SyntaxWarning/TypeError和初始化静态问题仍保持，也不倒写曾有实际NameError。
+
+Ridge五量MAE是学生在既定新synthetic数据上的实际程序输出，MPa，教师未重算。预测实际为(m,)/(24,)的一维单目标数组，与对应单列目标计算MAE合法，不强制reshape。
+
+```text
+ridge_train_mae09 = [5.338252179889854, 4.530140714271188, 4.360514606139826, 4.511729679592049, 4.166076753395134]
+ridge_val_mae09 = [6.176422413996963, 5.399185828826887, 5.245536559794537, 5.188417647559322, 5.27467737077765]
+```
+
+两列表各5值，对应12/24/48/72/96；三位打印只改变显示，列表保留原始精度。
+
+实践16按给定数据映射/标签要求，首次提交的Ridge绘图代码正确，未追加本轮plot调试提示：横轴train_sizes09，纵轴分别ridge_train_mae09/ridge_val_mae09，图例区分训练/验证，坐标为Training samples与MAE(MPa)，标题Ridge (degree=4, alpha=1.0) - synthetic data。学生将绘图追加在原循环代码格，但语句缩进位于for外，等效实现不另立错误；没有覆盖原线性图及结果。实际[12]输出1张可读Ridge PNG、无error。输入为三份等长5的一维列表，输出两条五点曲线；目前只确认实现/显示，不代替学生解释趋势或两模型优劣。
+
+Ridge PNG从学生Notebook索引9[12]的image/png原字节导出，文件learning/exercises/figures/unit09-ridge-learning-curve.png，588×455、31325字节，SHA256 f313a684d90f4b7b89b2b84e0926acb469d868fcbc6ed04504f9e5336197e079，Git blob ad3a665bb61ab455f8e16b8202f3b21bd0db99f2。已直接查看原图检查可读性，没有教师重新拟合/重绘。原线性PNG SHA256仍2c29b3a9fe24e8cb3a54ae1233edf07d44bbcec51d4dd4789d858ec9202567ba；两张均为synthetic真实运行图，与手工示意A/B分开。
+
+数据源、四seed、前缀训练子集/顺序、degree4/include_biasFalse/alpha1均保持固定，每m完整Pipeline只fit该m条，固定验证24只预测/评分，保留测试30封存。四CSV/ID/manifest hash与此前相同。相同开发实验重跑不是新的独立泛化证据，图不作材料实验性能或所有未知材料预测保证。K折、GroupKFold原理和正式8题仍未开始。
+
+学生实际绘图源码：
+
+```python
+#画图，折线的通用写法是plt.plot(x, y, marker="o", label="曲线名称")
+train_sizes09 = [12, 24, 48, 72, 96]
+
+    # 训练曲线：第一个参数：横坐标，使用 train_sizes09，包含5个训练样本数。
+    # 第二个参数：纵坐标，使用 train_mae09，包含对应的5个训练MAE。
+plt.plot(train_sizes09, ridge_train_mae09, marker="o", label="Training MAE")
+plt.plot(train_sizes09, ridge_val_mae09, marker="o", label="Validation MAE")
+
+plt.xlabel("Training samples")
+plt.ylabel("MAE (MPa)")
+plt.title("Ridge (degree=4, alpha=1.0) - synthetic data")
+plt.legend()
+plt.show()
+```
+
+![学生实际Ridge学习曲线：synthetic data](figures/unit09-ridge-learning-curve.png)
+
+当前Notebook原字节归档146387字节，SHA256 27406f49369d3dac32e6e82f5d4531c1085f24c782ab403bf1df72b09b8a6ac2，Git blob 6ac25a9f411a918c0f650596cd218e73eea70f04；5代码格规范化JSON摘要2620e1272b9acd0ed8073b5793a5d5c2fda399721f90638c505c6379b178fb9a，计数[1]/[2]/[3]/[9]/[12]，无error，包含原线性及新Ridge两张实际PNG。教师只读/nbformat静态验证、导出已有PNG，未执行模型/预测/评分/绘图或编辑Notebook source/outputs/metadata，不推定重启/Run All。原失败[10]及逐层帮助在历史提交/错题档保留。
+
+### 当前教学检查Q21：Ridge验证曲线两段变化（待答）
+
+> 只看Ridge图的橙色验证曲线：比较12→48条和48→96条这两段，MAE的变化幅度有什么不同？请根据图或数值说明。
+
+尚无首次回答；题前不提供两段变化描述、原因或模型优劣结论。只考同一条验证曲线上不同训练量区间的变化幅度，不升级成已证明的收益/噪声机制或整章掌握，不计正式8题。先由学生独立读图，随后再在同一m下比较两方案，逐步引出固定验证划分的局限与K折，不重新整章教学。
