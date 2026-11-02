@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，plot首稿实际ValueError已保留，Q16讲解后首次正确，plot已提示后修正并实际出图，Q17/Q18分段读图及Q19算例已有答案，预设Ridge96条fit已运行，当前待其五训练量循环，完整曲线与K折仍未运行。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，plot首稿实际ValueError已保留，Q16讲解后首次正确，plot已提示后修正并实际出图，Q17/Q18分段读图及Q19算例已有答案，预设Ridge96条fit已运行，其五训练量循环首稿报错，当前待局部修正，完整曲线与K折仍未运行。
 
 ## 工作簿与运行环境
 
@@ -881,8 +881,64 @@ Pipeline(steps=[('poly', PolynomialFeatures(degree=4, include_bias=False)),
 
 当前Notebook原字节归档100707字节，SHA256 dc67399a6e18b99d26eba566417dbb234a9701f9aad7b02d350dceaa2f380a3e，Git blob bdc901fe33de56219b244d6aae1f5776568499e0；4代码格规范化JSON摘要a611a2b795f0a726d78436744f641ad609c825e449eda819c77198a506c6c9fb，计数[1]/[2]/[3]/[9]，无error，保留原线性实际图及Ridge fit的Pipeline输出。教师只读/nbformat静态核验，未执行模型/预测/评分/绘图、未编辑source/outputs/metadata，不推定重启/Run All。源CSV、开发ID、保留ID、manifest四hash与前次一致。
 
-### 当前下一步：完整预设Ridge学习曲线循环（实践15，待学生代码）
+### 当时任务：完整预设Ridge学习曲线循环（历史，首稿已提交并报错）
 
 无需再拆一轮96条预测练习。沿用已跑通的一次线性循环，采用相同m=[12,24,48,72,96]、相同前缀训练样本与原固定24条验证。用新列表ridge_train_mae09、ridge_val_mae09保留此方案结果。每轮对本轮m条完整fit预设三步管道，再预测本轮训练样本与固定验证样本，正确配对计算两项MAE并append原始值，最后在循环外打印两个五值列表。
 
 核心约束是每个m都完整重新fit；可以在循环内新建三步管道，也可对同一完整Pipeline重新fit，不把分配新Python对象当额外评分门槛。输入仍是synthetic原始单特征表与配对UTS，训练数量m、验证数量24；Ridge预测的实际一维/二维形状待输出核验，不机械套用OLS二维预期，MAE依样本对应关系检查。两个MAE列表预期各5个数。先提交Ridge循环代码检查、暂不运行；教师不代写整段循环，不预告Ridge分数/曲线趋势，也不开展调参。
+
+## 实践15：Ridge循环首稿与问题定位（2026-11-02）
+
+实践15首次Ridge循环稿的机器学习流程安排正确：五个预设m、同位置前m行X/y、每轮拟合完整四次特征→标准化→Ridge(alpha1)、同一固定验证24、预测/目标MAE配对及append位置正确。但有步骤列表分隔符遗漏与结果容器未在源码初始化两个实现问题，不能记为完整循环首次正确。
+
+保存索引9代码格[10]与本次聊天代码一致。第一轮已打印12及(12,1) (12,1)，随后因("poly", poly09_m)行末漏逗号，Python把后面的括号作为对前一元组的调用，出现SyntaxWarning: 'tuple' object is not callable; perhaps you missed a comma?，并实际抛出TypeError: 'tuple' object is not callable。不是SyntaxError。警告重复输出不当作多次独立错误；一次实际TypeError发生在Pipeline参数列表构造处，本轮尚未到完整fit、predict、MAE或append。
+
+全保存Notebook源码里，ridge_train_mae09和ridge_val_mae09只出现于append/print，未找到赋值初始化。需要在for之前顶格建立两个空列表，让每次完整运行从空容器收集五轮值。隐藏内核是否已有同名变量未核实；当前执行已在前面中止，未实际触发NameError，不编造该异常或声称append已经失败。此处是静态问题，与实际逗号错误分开记录，不否认此前线性列表已示范后正确整合及Q16跟踪答对。
+
+教师仅指出第一项("poly", poly09_m)与第二项之间缺逗号，解释Pipeline步骤是列表的各个元素、彼此用逗号分隔；提示参照先前空列表方法，在for之前初始化两个新的Ridge结果列表。没有代写修正后的完整循环或预填MAE；尚无学生修正答案、成功Ridge循环运行或独立复查。
+
+现有独立96条Ridge fit[9]仍为有效证据，错误[10]只说明这次五量循环首轮未fit，不能写成从未拟合Ridge，也不能写已新增m12模型/预测/误差点。参数、数据、四seed、固定验证24和封存测试30不变，暂无Ridge分数/曲线、K折或正式8题。
+
+学生本次首次循环源码（原样保留）：
+
+```python
+# Ridge版本的学习曲线循环
+for m in [12, 24, 48, 72, 96]:
+    print(m)
+    
+    X09_m = X09_pool.iloc[:m]  #取前m行
+    y09_m = y09_pool.iloc[:m]
+    print(X09_m.shape, y09_m.shape)
+
+    poly09_m = PolynomialFeatures(degree = 4, include_bias = False)# 4次特征展开
+    scaler09_m = StandardScaler()#创建标准化器
+    ridge09_m = Ridge(alpha=1.0)
+    pipe09_m = Pipeline([
+        ("poly", poly09_m)
+        ("scale", scaler09_m),
+        ("reg", ridge09_m),
+    ])
+    pipe09_m.fit(X09_m, y09_m)
+    
+    y09_m_ridge_pred = pipe09_m.predict(X09_m)
+    y09_valm_ridge_pred = pipe09_m.predict(X09_val)
+    print(y09_m_ridge_pred.shape, y09_valm_ridge_pred.shape)
+    
+    mae09_train_ridge_m = mean_absolute_error(y09_m, y09_m_ridge_pred)#结果变量 = 函数名称(真实值, 预测值)
+    print(f"训练MAE:  {mae09_train_ridge_m:.3f} MPa")#f让花括号中的变量插入文本，:.3f 表示显示小数点后三位。这只改变显示，原变量的数值不变。
+    mae09_val_ridge_m = mean_absolute_error(y09_val, y09_valm_ridge_pred)#计算验证集MAE
+    print(f"验证MAE: {mae09_val_ridge_m:.3f} MPa")
+
+    # 循环内用 .append() 保存本轮结果
+    ridge_train_mae09.append(mae09_train_ridge_m)  #它的意思是：把本轮刚算出的一个MAE，添加到列表末尾
+    ridge_val_mae09.append(mae09_val_ridge_m)
+
+print(ridge_train_mae09, ridge_val_mae09)
+
+```
+
+当前Notebook原字节归档105512字节，SHA256 dfc247cf245319a8180409694f4bdaebd14eda2ed69a7f183b296f5b7b398e11，Git blob 8cc57280c871f7eb9a6a356bb9d33a458e59a1d6；5代码格规范化JSON摘要8deb20d7cb9691aa02c2014928a075d5616aed36e8960ae64a75ba1f1fbc93f0，计数[1]/[2]/[3]/[9]/[10]，保留SyntaxWarning stderr、1个TypeError及完整traceback。教师仅只读/nbformat静态验证，未执行模型/预测/评分或编辑Notebook source/outputs/metadata，不推定重启/Run All。源CSV、开发ID、保留ID、manifest四hash与前次一致。
+
+### 当前下一步：实践15局部修正（待学生两段代码）
+
+先只修两处：Pipeline第一项与下一项之间的分隔符；for之前两份新结果列表初始化。请学生提交“循环前的初始化”与“循环内修正后的Pipeline构造”两小段，并保留正确缩进，暂不运行、不需重贴整个循环。教师未提供完整正确循环，当前未答，不提前记提示后修正或运行成功。
