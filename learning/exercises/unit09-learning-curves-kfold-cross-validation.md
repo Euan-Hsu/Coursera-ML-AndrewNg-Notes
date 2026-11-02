@@ -1,8 +1,47 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中。实践18首次构造代码已收到，两处静态问题待提示后修正；没有本稿运行证据，未更新Notebook。开发输入实际保存证据保持。
+状态：学习中。修正后的kf09构造已随[17]保存，旧数据/图与前五格不变；实践19待首折索引检查代码，尚无实际CV分数。
 
-## 最新检查点：实践18首稿与静态检查（2026-11-02）
+## 最新检查点：实践18提示后修正与实际保存（2026-11-02）
+
+实践18已在教师局部提示后修正，并保存实际执行证据。截图中True和无中文分号均正确；复读本地Notebook索引10[17]，源码为kf09 = KFold(n_splits = 5, shuffle = True, random_state = 20261032)，stdout仍为开发输入两个(120,1)，全文件无error。KFold赋值本来不额外打印对象，结合该格正确源码/执行输出确认构造成功，不把旧shape输出当作五折训练结果。
+
+当前实际保存代码格（包含先前开发输入准备）：
+
+```python
+# k折交叉验证
+X09_dev = df09_dev[["ZrB2_wt_pct"]]
+y09_dev = df09_dev[["UTS_MPa"]]
+print(X09_dev.shape, y09_dev.shape)
+
+    # 创建KFold分组规则对象
+from sklearn.model_selection import KFold
+kf09 = KFold(n_splits = 5, shuffle = True, random_state = 20261032)
+```
+
+stdout为(120, 1) (120, 1)。输入准备部分的来源仍df09_dev，输出X/y各(120,1)；构造部分的输入是三个配置值，输出KFold规则对象，无数据表shape或新MAE。缩进的单独注释行不构成代码缩进错误，不因此另立问题。
+
+第一遍只读曾遇到尚未同步的旧ture源码，短暂复读后正确版本已写入；这是保存时点差异，不新增错误，也不冒称曾观察到旧稿SyntaxError/NameError。原聊天首稿、中文分号是否在Notebook中的条件说明、种子非日期的释疑与提示层级保留。此步记“提示后修正并实际构造成功”，不是首次完整构造正确或独立复查通过。
+
+Notebook原始字节147014，SHA256 820b489635dd8042e83f3b9d9eb6a4580fda7618702e9ea9998aaa29a9700c42，Git blob ca4ad5c4655b75852da6a206ad1132e9c9c14497；全部6个原始代码格规范化摘要2f90111567a6be95e323afc2730626598048baab0b626b89c7f6bf0091b13518。计数[1,2,3,9,12,17]，无error，nbformat静态有效；不据编号推断重启/Run All或未见的第16次执行内容。
+
+前五个代码格的规范化摘要仍2620e1272b9acd0ed8073b5793a5d5c2fda399721f90638c505c6379b178fb9a，源CSV、开发/holdout ID、split manifest及线性/Ridge两PNG的hash均不变。教师没有执行Notebook、KFold分组、拟合、预测、评分或重绘，只读核验并原样归档学生文件。
+
+### 当前实践19：观察实际折分内容（待首次代码）
+
+新API用法示范：
+
+```python
+folds09 = list(kf09.split(X09_dev))
+```
+
+输入是既定kf09规则和现有X09_dev(120,1)，来源为同一份synthetic开发数据；split按规则给出每折两组行位置编号，list将五份安排收集成列表。位置从0开始，针对当前开发表的行顺序，不是sample_id或原DataFrame索引标签。这里只生成分组信息，不拟合模型或计算MAE；30条holdout不参与。
+
+folds09[0]取列表第一份安排，其中先训练行号、后验证行号。说明可以用两个变量接收这两个结果，沿用此前多变量接收写法，不引入next/enumerate或双层索引。请学生补代码：用train_idx09、val_idx09接收第一折，然后打印列表长度及两数组shape；len(列表)返回元素个数。预期长度5、首折行号数组shape为(96,)和(24,)，这些只是待核验的预期，不是当前已运行输出。暂不取实际样本或写模型训练循环。
+
+先在聊天提交补充代码检查，不代写完整KFold/Pipeline/cross_validate全流程；首次新API示范属于教师提供，不计整套独立实现。参考：[scikit-learn 1.7.2 KFold.split官方文档](https://scikit-learn.org/1.7/modules/generated/sklearn.model_selection.KFold.html#sklearn.model_selection.KFold.split)。
+
+## 上一检查点：实践18首稿与静态检查（2026-11-02）
 
 学生首次聊天源码原样保存：
 
