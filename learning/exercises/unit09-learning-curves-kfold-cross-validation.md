@@ -1,6 +1,6 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，plot首稿实际ValueError已保留，Q16讲解后首次正确，plot已提示后修正并实际出图，Q17/Q18分段读图及Q19算例已有答案，当前待预设Ridge构造，完整曲线与K折仍未运行。
+状态：学习中；2026-10-29启动。本文件保存实验预设、新synthetic CSV及学生实际代码。[6]首稿真实返回值数量错误已保留，[7]提示后修正并输出120/30分组shape；[12]已提示后修正ID导出并保存，两个ID文件核验通过；开发内部96/24及四变量准备已首次代码正确并保存；m=12配对切片已首次代码正确并保存；[4]已首次正确构造并fit 12样本线性管道；m12的训练/固定验证MAE已保存真实输出（详见最新检查点），24样本完整管道也已首次代码正确并实际fit，m24预测/MAE现已首次代码正确并运行，Q15首次比较正确，完整线性循环五点已运行，列表收集已在局部示范后完成，plot首稿实际ValueError已保留，Q16讲解后首次正确，plot已提示后修正并实际出图，Q17/Q18分段读图及Q19算例已有答案，预设Ridge96条fit已运行，当前待其五训练量循环，完整曲线与K折仍未运行。
 
 ## 工作簿与运行环境
 
@@ -840,8 +840,49 @@ Q19为synthetic手算示例，只研究平均数：原两项绝对误差2、4 MP
 
 当前Notebook原字节归档64208字节，SHA256 045d74186630182bca39e8e63fca3c841e30e14414ac4d7a64d60b0bd63bb1c9，Git blob 1aa035f09ec0e934373de5986d5da46e10e32522；3代码格规范化JSON摘要d6d6d9820962d068949aa642962b9f1a126c030010efe979725932990cba1238，计数[1]/[2]/[3]、无error。与上一归档相比，三个代码格的source/outputs/metadata在排除execution_count后完全一致，原嵌入PNG SHA256仍2c29b3a9fe24e8cb3a54ae1233edf07d44bbcec51d4dd4789d858ec9202567ba；源CSV/开发ID/保留ID/manifest四hash一致。没有用户重启/Run All声明，不从新计数推定具体操作；教师仅只读/nbformat静态验证并原样归档，未运行模型/评分/绘图或编辑Notebook。
 
-### 当前下一步：公平比较说明与预设Ridge管道构造（Q20/实践14，待学生说明和代码）
+### 当时任务：公平比较说明与预设Ridge构造（历史，已答并已实际fit）
 
 为避免额外拆一轮抽象问答，作为一个连贯任务：学生先用一句话说明公平比较两个方案时，每个m的训练子集和验证样本应怎样安排，再写构造预设管道的代码。固定方案为PolynomialFeatures(degree=4, include_bias=False)→StandardScaler→Ridge(alpha=1.0)，命名pipe09_ridge；只构造，不fit/predict/评分。PolynomialFeatures与Ridge已在单元08学过，不重新整章教学，不引入新模型或调参。
 
 构造代码未接收数据，输出是未训练Pipeline对象；后续原始输入仍是单列ZrB2含量，每个训练子集(m,1)，四次无常数展开后(m,4)，目标仍为synthetic UTS。数据映射/管道参数及顺序为预设任务约束，教师未提供整段Python构造答案；说明与代码均待学生，不提前记独立复查或运行。先在聊天提交一句说明及构造代码，暂不运行。
+
+## Q20/实践14：公平比较说明与Ridge首次拟合（2026-11-02）
+
+Q20学生首次原答：“两个方案训练子集和验证样本的数量相等且为同一批”。按题意理解为两个方案的对应训练子集相同、对应验证组相同，数据安排核心首次正确。教师具体化为：在同一m下，两方案都用训练池相同前m条，并共享原固定24条验证样本；不是把训练组和验证组合成同一组。不因没有额外解释未明确要求的理由而判错，不自动升级为旧Q2完整独立复查通过。
+
+实践14首次提交并保存的管道参数/顺序正确：PolynomialFeatures(degree=4, include_bias=False)→StandardScaler→Ridge(alpha=1.0)。学生实际命名pipe09_2，_2可表示第二个方案，不要求仅因变量名不同重做；后续保持引用一致。source注释“创建二次模型”应写为“四次特征展开”，但实际degree=4和执行正确，未据注释推定二次概念误解或新增错误。
+
+学生主动增加pipe09_2.fit(X09_pool, y09_pool)，保存代码格[9]与截图一致，execute_result返回三步Pipeline结构。只使用固定训练池96条synthetic样本，原始X/y各(96,1)，内部四次无常数展开后特征(96,4)，StandardScaler和Ridge随完整Pipeline在该96条内fit；原验证24与保留测试30未参与fit。虽然超出当时只构造的窄任务，但仍属已授权固定实验，不记为算法错误、泄漏或新候选。图示是已fit对象结构，不是预测/误差；目前Ridge仅有96条拟合证据，尚无其任何MAE或完整学习曲线点。
+
+学生首次代码（原样保留，包括注释）：
+
+```python
+# 构造名为 pipe09_ridge 的管道
+from sklearn.preprocessing import PolynomialFeatures#创建多项式转换器
+from sklearn.linear_model import Ridge
+
+poly09_2 = PolynomialFeatures(degree = 4, include_bias = False)#创建二次模型
+scaler09_2 = StandardScaler()
+ridge09_2 = Ridge(alpha=1.0)
+pipe09_2 = Pipeline([
+    ("poly", poly09_2),
+    ("scale", scaler09_2),
+    ("reg", ridge09_2),
+])
+pipe09_2.fit(X09_pool, y09_pool)
+```
+
+实际execute_result的text/plain：
+
+```text
+Pipeline(steps=[('poly', PolynomialFeatures(degree=4, include_bias=False)),
+                ('scale', StandardScaler()), ('reg', Ridge())])
+```
+
+当前Notebook原字节归档100707字节，SHA256 dc67399a6e18b99d26eba566417dbb234a9701f9aad7b02d350dceaa2f380a3e，Git blob bdc901fe33de56219b244d6aae1f5776568499e0；4代码格规范化JSON摘要a611a2b795f0a726d78436744f641ad609c825e449eda819c77198a506c6c9fb，计数[1]/[2]/[3]/[9]，无error，保留原线性实际图及Ridge fit的Pipeline输出。教师只读/nbformat静态核验，未执行模型/预测/评分/绘图、未编辑source/outputs/metadata，不推定重启/Run All。源CSV、开发ID、保留ID、manifest四hash与前次一致。
+
+### 当前下一步：完整预设Ridge学习曲线循环（实践15，待学生代码）
+
+无需再拆一轮96条预测练习。沿用已跑通的一次线性循环，采用相同m=[12,24,48,72,96]、相同前缀训练样本与原固定24条验证。用新列表ridge_train_mae09、ridge_val_mae09保留此方案结果。每轮对本轮m条完整fit预设三步管道，再预测本轮训练样本与固定验证样本，正确配对计算两项MAE并append原始值，最后在循环外打印两个五值列表。
+
+核心约束是每个m都完整重新fit；可以在循环内新建三步管道，也可对同一完整Pipeline重新fit，不把分配新Python对象当额外评分门槛。输入仍是synthetic原始单特征表与配对UTS，训练数量m、验证数量24；Ridge预测的实际一维/二维形状待输出核验，不机械套用OLS二维预期，MAE依样本对应关系检查。两个MAE列表预期各5个数。先提交Ridge循环代码检查、暂不运行；教师不代写整段循环，不预告Ridge分数/曲线趋势，也不开展调参。
