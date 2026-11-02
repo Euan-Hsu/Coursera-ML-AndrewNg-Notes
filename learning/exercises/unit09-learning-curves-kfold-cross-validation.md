@@ -1,8 +1,54 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中。修正后的kf09构造已随[17]保存，旧数据/图与前五格不变；实践19待首折索引检查代码，尚无实际CV分数。
+状态：学习中。实践19两阶段首稿及真实NameError已保存，末尾折数/行号/shape打印未执行；当前待补列表生成步骤，尚无CV评分。
 
-## 最新检查点：实践18提示后修正与实际保存（2026-11-02）
+## 最新检查点：实践19两阶段首稿与真实NameError（2026-11-02）
+
+实践19首份聊天代码的双变量接收和两数组shape查询正确，额外打印两组行号可接受；但总折数len(folds09)只在注释中出现，尚未打印。教师只提示把len(folds09)加入现有print，允许补后直接运行保存，不代写整行。该漏输出当时不登记算法错误，也没有当时的运行异常证据。
+
+第一份聊天源码：
+
+```python
+train_idx09, val_idx09 = folds09[0]  # folds09[0]:取第一折，其中包含两组编号，可以用两个变量接收; len(folds09)：查看列表里有几份安排
+print(train_idx09, val_idx09, train_idx09.shape, val_idx09.shape)
+```
+
+学生随后“已保存，报错”。只读保存Notebook索引10[25]，实际源码已把len(folds09)加入print，但在上一行train_idx09, val_idx09 = folds09[0]抛出NameError: name 'folds09' is not defined。此前只打印开发输入(120, 1) (120, 1)，末尾含len/数组/shape的print尚未执行，没有实际五折列表长度、首折行号或shape结果。
+
+当前实际保存的失败代码格原文：
+
+```python
+# k折交叉验证
+X09_dev = df09_dev[["ZrB2_wt_pct"]]
+y09_dev = df09_dev[["UTS_MPa"]]
+print(X09_dev.shape, y09_dev.shape)
+
+    # 创建KFold分组规则对象
+from sklearn.model_selection import KFold
+kf09 = KFold(n_splits = 5, shuffle = True, random_state = 20261032)
+
+train_idx09, val_idx09 = folds09[0]  # folds09[0]:取第一折，其中包含两组编号，可以用两个变量接收; len(folds09)：查看列表里有几份安排
+print(len(folds09),train_idx09, val_idx09, train_idx09.shape, val_idx09.shape)
+```
+
+真实输出：
+
+```text
+(120, 1) (120, 1)
+NameError: name 'folds09' is not defined
+```
+
+异常发生于本格第10行，创建正确kf09之后、末尾print之前；完整原始traceback/outputs保留在原样Notebook中，未代算任何折分。
+
+保存源码已正确创建kf09规则，却没有生成并赋值folds09。规则对象不会自动创建名为folds09的结果列表；本次缺列表生成步骤与实际NameError登记为第8项。不能倒写为此前已经观察报错，不能把它解释成KFold参数错误或把已正确的解包/len/shape判错，也不猜测学生遗漏的动机。
+
+当前最小提示：回看前一条“用split产生、list收集五折安排并赋给folds09”的示范句，把它放在创建kf09之后、读取folds09[0]之前。只补这一步，补后可直接运行当前格、Ctrl+S保存并提交实际输出；未重贴完整修正版/整套CV代码，没有新修正答案或成功折分证据。
+
+Notebook原始字节148855，SHA256 3afdbb2b765853b64ad5648f0fb64dea412e7b4f945938c2f92629471ebc2a43，Git blob 563504f885e14d6a836648ab165a6e93b814c2d0；全部6个原始代码格规范化摘要c4c241a0499f8ac50acfc8422cf9efa8b889f8031bb6fa2f08cb2c8c79fca297，前5格当前完整摘要25f5eecbf96f2901c45653fe47cf1f866aded894c50b13696a4cbde1947909c1。计数[19,20,21,22,23,25]，nbformat静态有效，含这一次实际NameError。旧5格源码、全部stdout及两内嵌PNG与上一归档逐项一致；执行计数等发生更新，不能说整格outputs/metadata规范化摘要未变，也不推断重启/Run All或未见的中间执行。
+
+源CSV、开发/holdout ID、split manifest及两独立PNG的hash仍保持。只有120条synthetic开发数据参与本单元流程，30条独立测试继续封存；两预设完整方案、参数和四seed保持。教师只读核验/原字节归档，没有执行Notebook、split、模型拟合/预测/评分或重绘。本次报错不产生新的CV性能证据，正式8题尚未开始。
+
+## 上一检查点：实践18提示后修正与实际保存（2026-11-02）
 
 实践18已在教师局部提示后修正，并保存实际执行证据。截图中True和无中文分号均正确；复读本地Notebook索引10[17]，源码为kf09 = KFold(n_splits = 5, shuffle = True, random_state = 20261032)，stdout仍为开发输入两个(120,1)，全文件无error。KFold赋值本来不额外打印对象，结合该格正确源码/执行输出确认构造成功，不把旧shape输出当作五折训练结果。
 
@@ -27,7 +73,7 @@ Notebook原始字节147014，SHA256 820b489635dd8042e83f3b9d9eb6a4580fda7618702e
 
 前五个代码格的规范化摘要仍2620e1272b9acd0ed8073b5793a5d5c2fda399721f90638c505c6379b178fb9a，源CSV、开发/holdout ID、split manifest及线性/Ridge两PNG的hash均不变。教师没有执行Notebook、KFold分组、拟合、预测、评分或重绘，只读核验并原样归档学生文件。
 
-### 当前实践19：观察实际折分内容（待首次代码）
+### 当时实践19：观察折分内容（历史任务，首稿及报错已收到）
 
 新API用法示范：
 
