@@ -1,8 +1,66 @@
 # 单元09：学习曲线与K折交叉验证——练习与运行记录
 
-状态：学习中。folds09生成和第一折位置检查已运行成功，真实输出与第8项修复已归档；当前Q30评分符号口头题待答，没有模型CV评分。
+状态：学习中。一次线性五折CV真实输出已保存，评分数组(5,)；Q30正确/求助与支架层级已补齐。实践21数组取相反数待代码/输出。
 
-## 最新检查点：实践19提示后完成与真实折分输出（2026-11-03）
+## 最新检查点：实践20真实五折评分与帮助层级（2026-11-03）
+
+实践20一次线性完整Pipeline交叉验证已由学生实际运行成功，保存格[7]正确采用StandardScaler→LinearRegression、原始X09_dev/y09_dev和同一folds09，scoring="neg_mean_absolute_error"。多余的提前fit已删除；每折完整管道重新拟合，没有独立全开发数据预标准化。cv09_linear["test_score"]按键取值和打印均成功，实际shape(5,)，全文件无error。这里test_score是五个验证折，未使用30条封存独立测试。
+
+### 讲解与代码帮助（补齐此前本地记录）
+
+过程帮助层级补齐：Q30学生原答“4.2”在明确MPa的synthetic手算题下首次换算正确，教师补单位不降级；该4.2不是实际CV分数。实践20学生先答“不会”，属于求助而非错误；教师给完整旧两步管道和填X/y/cv的函数骨架，学生后三个映射首次代码正确。首稿额外提前fit仅多余，因为cross_validate会按折克隆未训练的完整管道并重新fit，不将其判CV泄漏或新增第9项；尚无该多余fit实际执行证据。后续字典取值行由教师示范，学生自行写的打印数组/shape首次正确。本步记教师支架后成功运行，不升级完整独立CV编程或旧错独立复查。
+
+原支架前任务曾要求构造/调用/打印一起完成，学生求助后实际缩为填X/y/cv；所以随后未打印不判漏项。最初聊天稿带提前pipe09_linear_cv.fit(X09_dev,y09_dev)，教师建议删掉作为流程简化，未判算法错误。已只读核对本机sklearn1.7.2的cross_validate源码在每折_fit_and_score使用clone(estimator)，新副本不带已fit参数；没有执行该函数验证参考分数。
+
+### 当前实际CV代码部分（同保存格内，首折分组检查保留）
+
+```python
+    # 用 cross_validate 自动执行五折：每折的标准化和模型拟合都只使用该折的96条训练数据。
+scaler09_cv = StandardScaler()#创建标准化器
+reg09_cv = LinearRegression()
+        
+pipe09_linear_cv = Pipeline([
+    ("scale", scaler09_cv),
+    ("reg", reg09_cv),
+])
+
+# cross_validate 会为每折创建未训练副本，再用该折的96条训练数据重新拟合，不沿用提前学到的参数。
+from sklearn.model_selection import cross_validate
+
+# cv09_linear 是字典，即按名称保存结果的容器：
+cv09_linear = cross_validate(
+    estimator=pipe09_linear_cv,
+    X=X09_dev,
+    y=y09_dev,
+    cv=folds09,
+    scoring="neg_mean_absolute_error",
+)#X：120条开发样本的输入表。y：对应的UTS目标表。cv：刚生成的五折安排列表。
+
+# 这行取出五个验证折的 负MAE评分。这里的 test_score 指验证折评分
+neg_mae09_linear = cv09_linear["test_score"]
+
+print(neg_mae09_linear, neg_mae09_linear.shape)
+```
+
+实际CV输出（原文显示精度；不是Q30手算或教师重算）：
+
+```text
+[-7.25421522 -6.42174577 -8.2799882  -7.61102202 -7.38939505] (5,)
+```
+
+输入数据源为既有synthetic开发样本120条，X09_dev/y09_dev各(120,1)，原始ZrB2输入与模拟UTS目标，sample_id未作特征。cv=folds09给出相同五折，每折96训练/24验证。输出字典按test_score键取五个验证折评分，数组(5,)，顺序对应folds09的第1—5折。未得到正MAE数组/均值/std的新运行证据，不把打印的舍入值当完整底层精度，也不填模拟的“真实材料分数”。
+
+本次Notebook原样149299字节，SHA256 ec33cd9b0282ee6cbcb439c8f4e890c7a1aab4b6d9ddd9cdd49913a9107f8733，Git blob 1e2173b9c79b22162f646e62f12fbef74816f752；6格原始规范化摘要b1cff197e7bcf979c9eeae9f09c5821a563de7d05eaf45f10914258132304bea。前5格完整摘要仍41743c183bd618cbf7e527abc4731c587655d377812ef2830ce1620e167cc52d，与上一归档一致，旧源代码/完整输出/metadata保留。计数[1,2,3,4,5,7]，nbformat静态有效；不据此声称观察重启/Run All。两内嵌PNG、四CSV/ID/manifest及两独立PNG hash保持，教师没有运行学生或参考模型，只读核验保存输出并原字节归档。
+
+原30条独立测试保持封存，其他候选/参数/四seed不变；本次是既定一次线性方案开发集CV的程序结果，尚无Ridge CV或最终方案冻结，正式8题未开始。
+
+### 当前实践21：将五折负评分转换成MAE（待代码/实际输出）
+
+不再重复Q30标量换算。请在新代码格对现有neg_mae09_linear整体取相反数，保存为mae09_linear_folds，打印数组及shape。给通用提示：负号放在数组名前，会逐个元素取相反数；不代写实际赋值和print两行。
+
+输入是本次synthetic开发数据真实CV运行产生的五值负评分数组(5,)，输出预期是五折非负MAE数组(5,)，单位MPa。只转换已有评分，不需要重新训练；写好后允许直接运行该格、Ctrl+S保存并提交输出，不为这一步另加代码审批。当前尚无学生代码/转换运行结果，不预填正数表或计算均值/std，也暂不执行Ridge。
+
+## 上一检查点：实践19提示后完成与真实折分输出（2026-11-03）
 
 实践19已提示后补齐并运行成功：在正确kf09构造后、读取folds09[0]前加入folds09 = list(kf09.split(X09_dev))。实际输出列表长度5，第一折训练位置96个、验证位置24个，shape分别(96,)和(24,)；保留初始解包/shape正确、len漏输出提示后补齐及随后第8项实际NameError的完整阶段，不改为整步首次独立完成。
 
@@ -44,11 +102,11 @@ print(len(folds09),train_idx09, val_idx09, train_idx09.shape, val_idx09.shape)
 
 前5格源码、全部stdout与上一归档逐项一致，两内嵌PNG以及源CSV、开发/holdout ID、split manifest和两独立PNG的hash均保持。计数/显示等随重跑变化，不称旧整格完整规范化JSON未变。教师仅只读核验/解析保存输出并原样归档，未执行学生Notebook、split、模型fit/预测/评分或重绘。120条synthetic开发数据、30条封存独立测试、两预设方案/参数/四seed保持；没有新的CV模型性能或材料实验结果，正式8题未开始。
 
-### 当前教学检查Q30：负MAE评分的换算（待答，不计正式8题）
+### 当时教学检查Q30：负MAE换算（历史题面，现已答）
 
 准备进入cross_validate前，只讲评分约定：scikit-learn的scorer按“返回值越大越好”比较；MAE本身按“越小越好”，所以scoring="neg_mean_absolute_error"返回-MAE。负号属于评分接口，实际MAE仍非负。对应[scikit-learn 1.7.2官方评分说明](https://scikit-learn.org/1.7/modules/model_evaluation.html#scoring-string-names)。
 
-单一口头题：某折返回-4.2，这是明确的synthetic手算教学示例，不是当前Notebook运行分数。若换回MAE并用MPa报告，应写多少？学生尚未回答，不预填答案/通过，不同时加入均值、标准差或完整CV代码。讲解后的首次应用不当作旧错独立复查或正式8题。
+单一口头题：某折返回-4.2，这是明确的synthetic手算教学示例，不是当前Notebook运行分数。若换回MAE并用MPa报告，应写多少？当时尚未回答；现已首次答对，见最新入口。该题未同时加入均值、标准差或完整CV代码。讲解后的首次应用不当作旧错独立复查或正式8题。
 
 后续直接进入完整Pipeline配合现有folds09的cross_validate，不重复已学的手动切片/单折训练整套流程；独立测试集区别稍后单独确认。原30条holdout继续封存，本单元尚无任何真实CV模型评分。
 
